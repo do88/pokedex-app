@@ -1,0 +1,165 @@
+body {
+	padding: 4rem;
+}
+
+// CONTAINER
+.container {
+	display: grid;
+	grid-template-columns: 65% 1fr;
+	grid-gap: 3rem;
+	justify-content: space-between;
+	width: 100%;
+	max-width: 80rem;
+	min-height: calc(100vh - 8rem);
+	margin: auto;
+	background: $color-red;
+	border-radius: 1rem;
+	box-shadow: 0 0.5rem 0 0 darken($color-red, 10%), 0 0.5rem 2rem 0 rgba(black, 0.3);
+	padding: 4rem;
+}
+
+// MAIN SCREEN
+.main-screen {
+	background-color: $color-beige;
+	border-radius: 0.5rem;
+	padding: 2rem;
+	font-family: $display-font;
+	color: $color-black;
+	overflow: auto;
+
+	.main-screen__title {
+		font-size: 3rem;
+		font-weight: normal;
+	}
+
+	.main-screen__list {
+		list-style: none;
+		font-size: 2rem;
+
+		.main-screen__list-item {
+			margin: 0.25rem -1rem;
+			padding: 0.75rem;
+
+			&.selected {
+				border: 2px dotted $color-green;
+			}
+		}
+
+		.main-screen__list-item-prefix {
+			font-size: 1.5rem;
+		}
+	}
+}
+
+// SIDEBAR
+.sidebar {
+	display: flex;
+	flex-direction: column;
+}
+
+// SUB-SCREEN
+.sub-screen {
+	@extend .main-screen;
+	height: 30rem;
+	font-size: 1.4rem;
+}
+
+// STATUS BAR
+.status-bar {
+	display: flex;
+	align-items: center;
+	list-style: none;
+	padding: 1rem;
+
+	.status-bar__item {
+		flex: 0 0 50%;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.status-bar__light {
+		display: block;
+		margin: 1rem;
+		width: 9px;
+		height: 9px;
+		border-radius: 100%;
+		background-color: black;
+		box-shadow: 0 1px 0 rgba(black, 0.2);
+
+		&.status-bar__light--green {
+			background-color: $color-green;
+		}
+		&.status-bar__light--red {
+			background-color: darken($color-red, 20%);
+		}
+	}
+
+	.status-bar__title {
+		font-size: 1.5rem;
+		text-transform: uppercase;
+		font-weight: bold;
+		color: darken($color-red, 22%);
+	}
+}
+
+// CONTROLS
+@mixin hover-states($hover-color) {
+	background-color: $hover-color;
+	box-shadow: 0 4px 0 darken($hover-color, 20%);
+	&:hover {
+		transform: translateY(-4px);
+		box-shadow: 0 8px 0 darken($hover-color, 20%);
+		cursor: pointer;
+	}
+	&:active {
+		transform: translateY(4px);
+		box-shadow: 0 0px 0 darken($hover-color, 20%);
+	}
+}
+
+.controls {
+	display: grid;
+	grid-gap: 1.5rem;
+	grid-template-columns: repeat(2, 1fr);
+	margin-top: auto;
+
+	[class^="controls"] {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border: none;
+		background: grey;
+		color: white;
+		font-size: 1.75rem;
+		text-transform: uppercase;
+		font-weight: bold;
+		padding: 1.25rem;
+		border-radius: 5px;
+		letter-spacing: 2.5px;
+		text-shadow: 0 1px 0 rgba(black, 0.3);
+		transition: all 0.15s ease-in;
+	}
+
+	.controls__up,
+	.controls__down {
+		@include hover-states($color-blue);
+	}
+
+	.controls__enter {
+		grid-column: 1 / -1;
+		@include hover-states($color-green);
+	}
+
+	.controls__return {
+		grid-column: 1 / -1;
+		@include hover-states($color-grey);
+	}
+}
+
+// <div class="controls">
+// <button class="controls__up controls--blue"></button>
+// <button class="controls__down controls--blue"></button>
+// <button class="controls__enter controls--green"></button>
+// <button class="controls__return controls--grey"></button>
+// </div>
