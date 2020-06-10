@@ -1,13 +1,16 @@
 <template>
 	<div class="container">
-		<MainScreen :pokemonList="pokemonList" />
+		<MainScreen
+			:pokemonList="pokemonList"
+			:apiLinks="pokemonAPI"
+			@fetch-next="fetchNextEvent"
+			@fetch-prev="fetchPrevEvent"
+		/>
 		<div class="sidebar">
 			<SubScreen />
 			<StatusBar />
 			<ScreenControls />
 		</div>
-		<button @click="fetchNext">Next</button>
-		<button @click="fetchPrev">Previous</button>
 	</div>
 </template>
 
@@ -27,15 +30,18 @@ export default {
 	},
 	data() {
 		return {
-			pokemonAPI: "https://pokeapi.co/api/v2/pokemon?limit=26",
-			nextLink: null,
-			prevLink: null,
+			pokemonListLimit: 26,
+			pokemonAPI: {
+				firstPage: `https://pokeapi.co/api/v2/pokemon?limit=26${this.pokemonListLimit}`,
+				nextPage: null,
+				previousPage: null
+			},
 			pokemonList: [],
 			loading: false
 		};
 	},
 	mounted() {
-		this.fetchData(this.pokemonAPI);
+		this.fetchData(this.pokemonAPI.firstPage);
 	},
 	methods: {
 		fetchData(apiLink) {
@@ -46,8 +52,8 @@ export default {
 					setTimeout(() => {
 						console.log(response.data);
 						this.pokemonList = response.data.results;
-						this.nextLink = response.data.next;
-						this.prevLink = response.data.previous;
+						this.pokemonAPI.nextPage = response.data.next;
+						this.pokemonAPI.previousPage = response.data.previous;
 					}, 300);
 					this.loading = false;
 				})
@@ -55,11 +61,11 @@ export default {
 					console.log(error);
 				});
 		},
-		fetchNext() {
-			this.fetchData(this.nextLink);
+		fetchNextEvent() {
+			this.fetchData(this.pokemonAPI.nextPage);
 		},
-		fetchPrev() {
-			this.fetchData(this.prevLink);
+		fetchPrevEvent() {
+			this.fetchData(this.pokemonAPI.previousPage);
 		}
 	}
 };

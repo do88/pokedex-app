@@ -1,10 +1,22 @@
 <template>
 	<div class="main-screen">
 		<h1 class="main-screen__title">POKEDEX INDEX</h1>
+		<div class="main-screen__controls">
+			<button
+				@click="goToPreviousPage"
+				v-if="apiLinks.previousPage"
+				class="main-screen_button"
+			>
+				« Previous
+			</button>
+			<button @click="goToNextPage" class="main-screen_button">
+				Next »
+			</button>
+		</div>
 		<ul class="main-screen__list">
 			<li class="main-screen__list-item" v-for="(item, index) in pokemonList" :key="index">
 				<span class="main-screen__list-item-prefix">No</span>
-				{{ pad(index, 3) }}:{{ item.name | titleize }}
+				{{ item.name | titleize }}
 			</li>
 		</ul>
 	</div>
@@ -16,6 +28,10 @@ export default {
 		pokemonList: {
 			type: Array,
 			required: true
+		},
+		apiLinks: {
+			type: Object,
+			required: true
 		}
 	},
 	filters: {
@@ -24,10 +40,11 @@ export default {
 		}
 	},
 	methods: {
-		pad(n, width, z) {
-			z = z || "0";
-			n = n + "";
-			return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+		goToPreviousPage() {
+			this.$emit("fetch-prev");
+		},
+		goToNextPage() {
+			this.$emit("fetch-next");
 		}
 	}
 };

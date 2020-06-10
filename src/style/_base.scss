@@ -52,7 +52,7 @@ $breakpoint-height: 42.5em; // 680px;
 
 html {
     box-sizing: border-box;
-    font-size: 50%;
+    font-size: 45%;
 
 	@media only screen and (min-width: $breakpoint-small) {
         font-size: 62.5%; // 1rem = 10px, 10px/16px = 62.5%
