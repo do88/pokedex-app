@@ -12,6 +12,7 @@ body {
 	width: 100%;
 	max-width: 80rem;
 	min-height: calc(100vh - 8rem);
+	max-height: calc(100vh - 8rem);
 	margin: auto;
 	background: $color-red;
 	border-radius: 1rem;
@@ -49,6 +50,10 @@ body {
 
 			&.selected {
 				border: 2px dotted $color-green;
+			}
+
+			&:last-child {
+				margin-bottom: 5rem;
 			}
 		}
 
