@@ -3,6 +3,7 @@
 		<MainScreen
 			:pokemonList="pokemonList"
 			:apiLinks="pokemonAPI"
+			:totalResults="totalResults"
 			@fetch-next="fetchNextEvent"
 			@fetch-prev="fetchPrevEvent"
 		/>
@@ -21,6 +22,12 @@ import SubScreen from "@/components/SubScreen.vue";
 import StatusBar from "@/components/StatusBar.vue";
 import ScreenControls from "@/components/ScreenControls.vue";
 
+// showing (startNumber) - (endNumber) of (total)
+// startNumber needs to be 1 to start with and then add the listLimit each time next page is clicked
+// endNumber needs to be 1+listLimit start with and then add the listLimit each time next page is clicked
+
+const pokemonListLimit = 60;
+
 export default {
 	components: {
 		MainScreen,
@@ -30,18 +37,19 @@ export default {
 	},
 	data() {
 		return {
-			pokemonListLimit: 26,
 			pokemonAPI: {
-				firstPage: `https://pokeapi.co/api/v2/pokemon?limit=26${this.pokemonListLimit}`,
+				firstPage: `https://pokeapi.co/api/v2/pokemon?limit=${pokemonListLimit}`,
 				nextPage: null,
 				previousPage: null
 			},
 			pokemonList: [],
+			totalResults: 0,
 			loading: false
 		};
 	},
 	mounted() {
 		this.fetchData(this.pokemonAPI.firstPage);
+		console.log(pokemonListLimit);
 	},
 	methods: {
 		fetchData(apiLink) {
@@ -52,6 +60,7 @@ export default {
 					setTimeout(() => {
 						console.log(response.data);
 						this.pokemonList = response.data.results;
+						this.totalResults = response.data.count;
 						this.pokemonAPI.nextPage = response.data.next;
 						this.pokemonAPI.previousPage = response.data.previous;
 					}, 300);

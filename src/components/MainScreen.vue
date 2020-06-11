@@ -1,21 +1,24 @@
 <template>
 	<div class="main-screen">
 		<h1 class="main-screen__title">POKEDEX INDEX</h1>
+
 		<div class="main-screen__controls">
 			<button
 				@click="goToPreviousPage"
-				v-if="apiLinks.previousPage"
-				class="main-screen_button"
+				:disabled="!apiLinks.previousPage"
+				class="main-screen__button"
 			>
 				« Previous
 			</button>
-			<button @click="goToNextPage" class="main-screen_button">
+			<button @click="goToNextPage" class="main-screen__button">
 				Next »
 			</button>
+			<span class="main-screen__index"> Showing 1 - 20 of {{ totalResults }} </span>
 		</div>
+
 		<ul class="main-screen__list">
 			<li class="main-screen__list-item" v-for="(item, index) in pokemonList" :key="index">
-				<span class="main-screen__list-item-prefix">No</span>
+				<!-- <span class="main-screen__list-item-prefix">No</span> -->
 				{{ item.name | titleize }}
 			</li>
 		</ul>
@@ -31,6 +34,10 @@ export default {
 		},
 		apiLinks: {
 			type: Object,
+			required: true
+		},
+		totalResults: {
+			type: Number,
 			required: true
 		}
 	},
