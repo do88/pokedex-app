@@ -50,6 +50,7 @@ export default {
 	methods: {
 		fetchData(apiLink, pageIncrease) {
 			this.loading = true;
+			console.log(this.loading);
 			axios
 				.get(apiLink)
 				.then(response => {
@@ -78,8 +79,11 @@ export default {
 							indexValue++;
 							item.indexValue = indexValue;
 						});
+
+						// End of function
+						this.loading = false;
+						console.log(this.loading);
 					}, 2000);
-					this.loading = false;
 				})
 				.catch(error => {
 					console.log(error);
