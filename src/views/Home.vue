@@ -1,9 +1,8 @@
 <template>
 	<div class="container">
 		<MainScreen
-			:pokemonList="pokemonList"
-			:apiLinks="pokemonAPI"
-			:totalResults="totalResults"
+			:pokemonAPI="pokemonAPI"
+			:loadingStatus="loading"
 			@fetch-next="fetchNextEvent"
 			@fetch-prev="fetchPrevEvent"
 		/>
@@ -22,10 +21,6 @@ import SubScreen from "@/components/SubScreen.vue";
 import StatusBar from "@/components/StatusBar.vue";
 import ScreenControls from "@/components/ScreenControls.vue";
 
-// showing (startNumber) - (endNumber) of (total)
-// startNumber needs to be 1 to start with and then add the listLimit each time next page is clicked
-// endNumber needs to be 1+listLimit start with and then add the listLimit each time next page is clicked
-
 const pokemonListLimit = 60;
 
 export default {
@@ -39,31 +34,51 @@ export default {
 		return {
 			pokemonAPI: {
 				firstPage: `https://pokeapi.co/api/v2/pokemon?limit=${pokemonListLimit}`,
+				pokemonList: [],
+				totalResults: 0,
 				nextPage: null,
-				previousPage: null
+				previousPage: null,
+				startPageNumber: 0,
+				endPageNumber: pokemonListLimit
 			},
-			pokemonList: [],
-			totalResults: 0,
 			loading: false
 		};
 	},
 	mounted() {
 		this.fetchData(this.pokemonAPI.firstPage);
-		console.log(pokemonListLimit);
 	},
 	methods: {
-		fetchData(apiLink) {
+		fetchData(apiLink, pageIncrease) {
 			this.loading = true;
 			axios
 				.get(apiLink)
 				.then(response => {
+					// Delay function for loading effects
 					setTimeout(() => {
-						console.log(response.data);
-						this.pokemonList = response.data.results;
-						this.totalResults = response.data.count;
+						// Set data in the local object
+						this.pokemonAPI.pokemonList = response.data.results;
+						this.pokemonAPI.totalResults = response.data.count;
 						this.pokemonAPI.nextPage = response.data.next;
 						this.pokemonAPI.previousPage = response.data.previous;
-					}, 300);
+
+						// Control page numbers based on back or forward
+						if (pageIncrease === "next-page") {
+							console.log(this.pokemonAPI.startPageNumber);
+							this.pokemonAPI.startPageNumber += pokemonListLimit;
+							this.pokemonAPI.endPageNumber += pokemonListLimit;
+						}
+						if (pageIncrease === "previous-page") {
+							this.pokemonAPI.startPageNumber -= pokemonListLimit;
+							this.pokemonAPI.endPageNumber -= pokemonListLimit;
+						}
+
+						// Add index value for each item
+						let indexValue = this.pokemonAPI.startPageNumber;
+						this.pokemonAPI.pokemonList.forEach(item => {
+							indexValue++;
+							item.indexValue = indexValue;
+						});
+					}, 2000);
 					this.loading = false;
 				})
 				.catch(error => {
@@ -71,10 +86,10 @@ export default {
 				});
 		},
 		fetchNextEvent() {
-			this.fetchData(this.pokemonAPI.nextPage);
+			this.fetchData(this.pokemonAPI.nextPage, "next-page");
 		},
 		fetchPrevEvent() {
-			this.fetchData(this.pokemonAPI.previousPage);
+			this.fetchData(this.pokemonAPI.previousPage, "previous-page");
 		}
 	}
 };

@@ -5,39 +5,44 @@
 		<div class="main-screen__controls">
 			<button
 				@click="goToPreviousPage"
-				:disabled="!apiLinks.previousPage"
+				:disabled="!pokemonAPI.previousPage || loadingStatus"
 				class="main-screen__button"
 			>
 				« Previous
 			</button>
-			<button @click="goToNextPage" class="main-screen__button">
+			<button @click="goToNextPage" class="main-screen__button" :disabled="loadingStatus">
 				Next »
 			</button>
-			<span class="main-screen__index"> Showing 1 - 20 of {{ totalResults }} </span>
+			<span class="main-screen__index">
+				Showing {{ pokemonAPI.startPageNumber }} - {{ pokemonAPI.endPageNumber }} of
+				{{ pokemonAPI.totalResults }}
+			</span>
 		</div>
 
 		<ul class="main-screen__list">
-			<li class="main-screen__list-item" v-for="(item, index) in pokemonList" :key="index">
-				<!-- <span class="main-screen__list-item-prefix">No</span> -->
-				{{ item.name | titleize }}
+			<li
+				class="main-screen__list-item"
+				v-for="(item, index) in pokemonAPI.pokemonList"
+				:key="index"
+			>
+				<span class="main-screen__list-item-prefix">No</span>
+				{{ pad(item.indexValue, 3) }}:{{ item.name | titleize }}
 			</li>
 		</ul>
 	</div>
 </template>
 
 <script>
+// start with pageStartNumber - 1 and then loop for the pokemonAPI.pokemonList.length adding one each timee
+
 export default {
 	props: {
-		pokemonList: {
-			type: Array,
-			required: true
-		},
-		apiLinks: {
+		pokemonAPI: {
 			type: Object,
 			required: true
 		},
-		totalResults: {
-			type: Number,
+		loadingStatus: {
+			type: Boolean,
 			required: true
 		}
 	},
@@ -52,6 +57,11 @@ export default {
 		},
 		goToNextPage() {
 			this.$emit("fetch-next");
+		},
+		pad(n, width, z) {
+			z = z || "0";
+			n = n + "";
+			return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
 		}
 	}
 };
