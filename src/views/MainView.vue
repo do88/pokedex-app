@@ -85,6 +85,7 @@ export default {
 				})
 				.catch(error => {
 					console.log(error);
+					this.loading = true;
 				});
 		},
 		fetchNextEvent() {

@@ -1,12 +1,11 @@
 <template>
 	<div class="container">
-		<PokemonViewScreen
+		<PokemonScreen
 			:currentPokemon="currentPokemon"
 			:nextPokemon="nextPokemon"
 			:previousPokemon="previousPokemon"
 		/>
 		<div class="sidebar">
-			<div>{{ id }}</div>
 			<SubScreen />
 			<StatusBar />
 			<ScreenControls />
@@ -16,7 +15,7 @@
 
 <script>
 import axios from "axios";
-import PokemonViewScreen from "@/components/PokemonViewScreen.vue";
+import PokemonScreen from "@/components/PokemonScreen.vue";
 import SubScreen from "@/components/SubScreen.vue";
 import StatusBar from "@/components/StatusBar.vue";
 import ScreenControls from "@/components/ScreenControls.vue";
@@ -26,12 +25,12 @@ const pokemonListLimit = 60;
 export default {
 	props: {
 		id: {
-			type: String,
+			type: [String, Number],
 			required: true
 		}
 	},
 	components: {
-		PokemonViewScreen,
+		PokemonScreen,
 		SubScreen,
 		StatusBar,
 		ScreenControls
@@ -49,17 +48,21 @@ export default {
 		this.asyncFetch(`https://pokeapi.co/api/v2/pokemon/${this.id}`).then(data => {
 			this.currentPokemon = data;
 		});
-		this.asyncFetch(`https://pokeapi.co/api/v2/pokemon/${parseInt(this.id) + 1}`).then(data => {
+		this.asyncFetch(`https://pokeapi.co/api/v2/pokemon/${this.id + 1}`).then(data => {
 			this.nextPokemon = data;
 		});
-		this.asyncFetch(`https://pokeapi.co/api/v2/pokemon/${parseInt(this.id) - 1}`).then(data => {
-			this.previousPokemon = data;
-		});
+		// Check if its first pokemon or last
+		if (this.id > 1) {
+			this.asyncFetch(`https://pokeapi.co/api/v2/pokemon/${this.id - 1}`).then(data => {
+				this.previousPokemon = data;
+			});
+		}
 	},
 	methods: {
 		async asyncFetch(apiLink) {
 			try {
 				const responceData = await axios.get(apiLink);
+				console.log(responceData.data);
 				return responceData.data;
 			} catch (error) {
 				console.log(error);

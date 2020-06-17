@@ -1,7 +1,6 @@
 <template>
 	<div class="main-screen">
 		<h1 class="main-screen__title">POKEDEX INDEX</h1>
-
 		<div class="main-screen__controls">
 			<button
 				@click="goToPreviousPage"
@@ -18,15 +17,16 @@
 				{{ pokemonAPI.totalResults }}
 			</span>
 		</div>
-
 		<ul class="main-screen__list">
 			<li
 				class="main-screen__list-item"
 				v-for="(item, index) in pokemonAPI.pokemonList"
 				:key="index"
 			>
-				<span class="main-screen__list-item-prefix">No</span>
-				{{ pad(item.indexValue, 3) }}:{{ item.name | titleize }}
+				<router-link :to="{ name: 'pokemon', params: { id: item.indexValue } }">
+					<span class="main-screen__list-item-prefix">No</span>
+					{{ pad(item.indexValue, 3) }}:{{ item.name | titleize }}
+				</router-link>
 			</li>
 		</ul>
 	</div>

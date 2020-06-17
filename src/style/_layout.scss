@@ -110,6 +110,36 @@ body {
 			}
 		}
 	}
+
+	.main-screen__stats {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		grid-gap: 2rem;
+
+		.main-screen__title {
+			grid-column: span 4;
+		}
+
+		.main-screen__stats-image,
+		.main-screen__stats-type {
+			grid-column: span 2;
+		}
+
+		.main-screen__stats-height,
+		.main-screen__stats-weight {
+			grid-column: span 1;
+		}
+
+		.main-screen__stats-base {
+			grid-column: span 4;
+			columns: 2;
+			column-gap: 2rem;
+
+			.main-screen__stats-base-list {
+				list-style: none;
+			}
+		}
+	}
 }
 
 // SIDEBAR

@@ -1,6 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
+import MainView from "../views/MainView.vue";
 import PokemonView from "../views/PokemonView.vue";
 
 Vue.use(VueRouter);
@@ -8,12 +8,12 @@ Vue.use(VueRouter);
 const routes = [
 	{
 		path: "/",
-		name: "Home",
-		component: Home
+		name: "home",
+		component: MainView
 	},
 	{
 		path: "/pokemon/:id",
-		name: "Pokemon",
+		name: "pokemon",
 		component: PokemonView,
 		props: true
 	}
