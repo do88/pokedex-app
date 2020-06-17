@@ -40,33 +40,37 @@ export default {
 			loading: false,
 			currentPokemon: {},
 			nextPokemon: {},
-			previousPokemon: {}
+			previousPokemon: {},
+			apiError: false
 		};
 	},
 	mounted() {
-		// Make API for current, next and previous pokemon
-		this.asyncFetch(`https://pokeapi.co/api/v2/pokemon/${this.id}`).then(data => {
-			this.currentPokemon = data;
-		});
-		this.asyncFetch(`https://pokeapi.co/api/v2/pokemon/${this.id + 1}`).then(data => {
-			this.nextPokemon = data;
-		});
-		// Check if its first pokemon or last
-		if (this.id > 1) {
-			this.asyncFetch(`https://pokeapi.co/api/v2/pokemon/${this.id - 1}`).then(data => {
-				this.previousPokemon = data;
-			});
-		}
+		this.fetchData(parseInt(this.id));
 	},
 	methods: {
-		async asyncFetch(apiLink) {
-			try {
-				const responceData = await axios.get(apiLink);
-				console.log(responceData.data);
-				return responceData.data;
-			} catch (error) {
-				console.log(error);
-			}
+		fetchData(pokeID) {
+			this.loading = true;
+			// Delay function for loading effects
+			setTimeout(() => {
+				// Make API calls
+				this.axiosAPICall(`https://pokeapi.co/api/v2/pokemon/${pokeID}`, this.currentPokemon);
+				this.axiosAPICall(`https://pokeapi.co/api/v2/pokemon/${pokeID + 1}`, this.nextPokemon);
+				this.axiosAPICall(`https://pokeapi.co/api/v2/pokemon/${pokeID - 1}`, this.previousPokemon);
+				// End of function
+				if (!this.apiError) this.loading = false;
+			}, 3000);
+		},
+		axiosAPICall(endpoint, dataObject) {
+			axios
+				.get(endpoint)
+				.then(response => {
+					console.log(response.data);
+					dataObject = response.data;
+				})
+				.catch(error => {
+					this.apiError = true;
+					console.log(error);
+				});
 		}
 	}
 };
