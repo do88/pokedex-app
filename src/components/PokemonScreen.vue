@@ -2,37 +2,45 @@
 	<div class="main-screen">
 		<div class="main-screen__stats">
 			<h1 class="main-screen__title">{{ currentPokemon.name }}</h1>
+
 			<template v-if="currentPokemon.sprites">
-				<div class="main-screen__stats-image">
+				<div class="main-screen__stats-image front-image">
 					<img :src="currentPokemon.sprites.front_default" alt="" />
 				</div>
-				<div class="main-screen__stats-image">
+				<div class="main-screen__stats-image back-image">
 					<img :src="currentPokemon.sprites.back_default" alt="" />
 				</div>
 			</template>
-			<div class="main-screen__stats-height">
-				<span class="main-screen__stats-prefix">Height:</span>
-				{{ currentPokemon.height }}
-			</div>
-			<div class="main-screen__stats-weight">
-				<span class="main-screen__stats-prefix">Weight:</span>
-				{{ currentPokemon.weight }}
-			</div>
-			<div class="main-screen__stats-type">
-				<span class="main-screen__stats-prefix">Type:</span>
-				<ul>
-					<li v-for="(item, index) in currentPokemon.types" :key="index">
+
+			<div class="main-screen__stats-overall">
+				<div class="main-screen__stats-entry">
+					<span class="main-screen__stats-prefix">Height:</span>
+					{{ currentPokemon.height }}
+				</div>
+
+				<div class="main-screen__stats-entry">
+					<span class="main-screen__stats-prefix">Weight:</span>
+					{{ currentPokemon.weight }}
+				</div>
+
+				<div class="main-screen__stats-entry">
+					<span class="main-screen__stats-prefix">Type:</span>
+					<div
+						class="main-screen__stats-type"
+						v-for="(item, index) in currentPokemon.types"
+						:key="index"
+					>
 						{{ item.type.name }}
-					</li>
-				</ul>
-			</div>
-			<div class="main-screen__stats-base">
-				<ul class="main-screen__stats-base-list">
+					</div>
+				</div>
+
+				<ul class="main-screen__stats-base">
 					<li v-for="(item, index) in currentPokemon.stats" :key="index">
 						{{ item.stat.name }} : {{ item.base_stat }}
 					</li>
 				</ul>
 			</div>
+
 			<div class="main-screen__stats-controls">
 				<button class="main-screen__stats-controls__button">
 					<span class="main-screen__stats-controls__image">
@@ -45,6 +53,7 @@
 						>{{ pad(previousPokemon.id, 3) }}:{{ previousPokemon.name }}</span
 					>
 				</button>
+
 				<button class="main-screen__stats-controls__button">
 					<span class="main-screen__stats-controls__image">
 						<template v-if="nextPokemon.sprites">
@@ -60,6 +69,7 @@
 		</div>
 	</div>
 </template>
+
 <script>
 export default {
 	props: {

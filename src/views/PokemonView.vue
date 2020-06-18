@@ -53,9 +53,9 @@ export default {
 			// Delay function for loading effects
 			setTimeout(() => {
 				// Make API calls
-				this.axiosAPICall(`https://pokeapi.co/api/v2/pokemon/${pokeID}`, this.currentPokemon);
-				this.axiosAPICall(`https://pokeapi.co/api/v2/pokemon/${pokeID + 1}`, this.nextPokemon);
-				this.axiosAPICall(`https://pokeapi.co/api/v2/pokemon/${pokeID - 1}`, this.previousPokemon);
+				this.axiosAPICall(`https://pokeapi.co/api/v2/pokemon/${pokeID}`, "current");
+				this.axiosAPICall(`https://pokeapi.co/api/v2/pokemon/${pokeID + 1}`, "next");
+				this.axiosAPICall(`https://pokeapi.co/api/v2/pokemon/${pokeID - 1}`, "previous");
 				// End of function
 				if (!this.apiError) this.loading = false;
 			}, 3000);
@@ -64,8 +64,9 @@ export default {
 			axios
 				.get(endpoint)
 				.then(response => {
-					console.log(response.data);
-					dataObject = response.data;
+					if (dataObject === "current") this.currentPokemon = response.data;
+					if (dataObject === "next") this.nextPokemon = response.data;
+					if (dataObject === "previous") this.previousPokemon = response.data;
 				})
 				.catch(error => {
 					this.apiError = true;
@@ -74,4 +75,9 @@ export default {
 		}
 	}
 };
+
+// need to make three calls each time
+// need to check if its first/last listing and not make request
+// need to make sure all calls work
+// need to delay whole thing by 2s
 </script>
