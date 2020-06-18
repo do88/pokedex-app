@@ -2,11 +2,12 @@
 	<div class="main-screen">
 		<template v-if="currentPokemon.sprites">
 			<div class="stats">
-				<h1 class="title">{{ currentPokemon.name }}</h1>
+				<h1 class="title">{{ pad(currentPokemon.id, 3) }}:{{ currentPokemon.name | titleize }}</h1>
 
 				<div class="stats-image front-image">
 					<img :src="currentPokemon.sprites.front_default" alt="" />
 				</div>
+
 				<div class="stats-image back-image">
 					<img :src="currentPokemon.sprites.back_default" alt="" />
 				</div>
@@ -22,20 +23,20 @@
 						{{ currentPokemon.weight / 10 }} kg
 					</div>
 
-					<div class="stats-entry">
+					<div class="stats-type">
 						<span class="stats-prefix">Type:</span>
-						<div class="stats-type" v-for="(item, index) in currentPokemon.types" :key="index">
+						<div v-for="(item, index) in currentPokemon.types" :key="index">
 							{{ item.type.name
 							}}<template v-if="currentPokemon.types.length >= 2">, </template>
 						</div>
 					</div>
-
-					<ul class="stats-base">
-						<li v-for="(item, index) in currentPokemon.stats" :key="index">
-							{{ item.stat.name }} : {{ item.base_stat }}
-						</li>
-					</ul>
 				</div>
+
+				<ul class="stats-base">
+					<li v-for="(item, index) in currentPokemon.stats" :key="index">
+						{{ item.stat.name }}: {{ item.base_stat }}
+					</li>
+				</ul>
 
 				<div class="stats-controls">
 					<button class="stats-controls__button">
@@ -44,10 +45,12 @@
 								<img :src="previousPokemon.sprites.front_default" alt="" />
 							</template>
 						</span>
-						<span class="stats-controls__navigation">Previous</span>
-						<span class="stats-controls__title"
-							>{{ pad(previousPokemon.id, 3) }}:{{ previousPokemon.name }}</span
-						>
+						<div class="stats-controls__text">
+							<span class="stats-controls__navigation">Previous</span>
+							<span class="stats-controls__title"
+								>{{ pad(previousPokemon.id, 3) }}:{{ previousPokemon.name | titleize }}</span
+							>
+						</div>
 					</button>
 
 					<button class="stats-controls__button">
@@ -56,10 +59,12 @@
 								<img :src="nextPokemon.sprites.front_default" alt="" />
 							</template>
 						</span>
-						<span class="stats-controls__navigation">Next</span>
-						<span class="stats-controls__title"
-							>{{ pad(nextPokemon.id, 3) }}:{{ nextPokemon.name }}</span
-						>
+						<div class="stats-controls__text">
+							<span class="stats-controls__navigation">Next</span>
+							<span class="stats-controls__title"
+								>{{ pad(nextPokemon.id, 3) }}:{{ nextPokemon.name | titleize }}</span
+							>
+						</div>
 					</button>
 				</div>
 			</div>
@@ -81,6 +86,11 @@ export default {
 		previousPokemon: {
 			type: Object,
 			required: true
+		}
+	},
+	filters: {
+		titleize(value) {
+			return value.replace(/(?:^|\s|-)\S/g, x => x.toUpperCase());
 		}
 	},
 	methods: {
