@@ -15,12 +15,16 @@ body {
 	width: 100%;
 	max-width: 90rem;
 	height: calc(100vh - 8rem);
-	max-height: 700px;
+	max-height: 600px;
 	margin: auto;
 	background: $color-red;
 	border-radius: 1rem;
 	box-shadow: 0 0.5rem 0 0 darken($color-red, 10%), 0 0.5rem 2rem 0 rgba(black, 0.3);
 	padding: 2.5rem;
+
+	@media only screen and (min-width: $breakpoint-large) {
+		width: 90rem;
+	}
 
 	@media only screen and (min-width: $breakpoint-small) {
 		grid-gap: 3rem;
@@ -37,7 +41,7 @@ body {
 	font-family: $display-font;
 	color: $color-black;
 	overflow: auto;
-	max-height: calc(700px - 5rem);
+	max-height: calc(600px - 5rem);
 
 	.main-screen__title {
 		font-size: 3rem;
@@ -115,22 +119,23 @@ body {
 
 	.stats {
 		display: grid;
-		grid-template-columns: repeat(4, 1fr);
+		grid-template-columns: repeat(2, 1fr);
 		grid-gap: 2rem;
-		margin-bottom: 2rem;
+		height: 100%;
+		align-items: start;
 
-		.title {
-			grid-column: span 4;
-			@extend .main-screen__title;
+		@media only screen and (min-width: $breakpoint-large) {
+			grid-template-columns: repeat(4, 1fr);
 		}
 
-		// .front-image {
-		// 	grid-area: f-image;
-		// }
+		.title {
+			grid-column: span 2;
+			@extend .main-screen__title;
 
-		// .back-image {
-		// 	grid-area: b-image;
-		// }
+			@media only screen and (min-width: $breakpoint-large) {
+				grid-column: span 4;
+			}
+		}
 
 		.stats-image {
 			grid-column: span 1;
@@ -173,13 +178,18 @@ body {
 		}
 
 		.stats-base {
-			grid-column: span 4;
+			grid-column: span 2;
 			font-size: 1.6rem;
 			text-transform: capitalize;
 			list-style: none;
 			display: grid;
-			grid-template-columns: repeat(2, 1fr);
+			grid-template-columns: repeat(1, 1fr);
 			grid-gap: 0.75rem 2rem;
+
+			@media only screen and (min-width: $breakpoint-large) {
+				grid-column: span 4;
+				grid-template-columns: repeat(2, 1fr);
+			}
 
 			li {
 				border-bottom: 2px dotted darken($color-beige, 10%);
@@ -189,10 +199,17 @@ body {
 		}
 
 		.stats-controls {
-			grid-column: span 4;
+			grid-column: span 2;
 			display: grid;
-			grid-template-columns: repeat(2, 1fr);
-			grid-gap: 0 2rem;
+			grid-template-columns: repeat(1, 1fr);
+			grid-gap: 2rem 2rem;
+			padding-bottom: 2rem;
+
+			@media only screen and (min-width: $breakpoint-large) {
+				grid-column: span 4;
+				grid-template-columns: repeat(2, 1fr);
+				grid-gap: 0 2rem;
+			}
 
 			.stats-controls__button {
 				display: flex;
@@ -235,7 +252,7 @@ body {
 .sidebar {
 	display: flex;
 	flex-direction: column;
-	max-height: calc(700px - 5rem);
+	max-height: calc(600px - 5rem);
 }
 
 // SUB-SCREEN

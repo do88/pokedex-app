@@ -18,11 +18,7 @@
 			</span>
 		</div>
 		<ul class="main-screen__list">
-			<li
-				class="main-screen__list-item"
-				v-for="(item, index) in pokemonAPI.pokemonList"
-				:key="index"
-			>
+			<li class="main-screen__list-item" v-for="(item, index) in pokemonAPI.pokemonList" :key="index">
 				<router-link :to="{ name: 'pokemon', params: { id: item.indexValue } }">
 					<span class="main-screen__list-item-prefix">No</span>
 					{{ pad(item.indexValue, 3) }}:{{ item.name | titleize }}

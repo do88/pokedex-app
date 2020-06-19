@@ -1,0 +1,15 @@
+TODO
+
+- Responsive styling for pokemon view
+- Previous and next buttons in pokemonview
+- Error handling for first and last pokemon in pokemonview
+- Remove router links from index page and control with buttons
+- Remove routes links from pokemonview page and control with buttons
+- Loading screen/light and error screen/light on index scree
+- Loading screen/light and error screen/light on pokemonview
+- Move actions and state to Vuex store
+- Store results in localstorage as user browses through pages and pokemon
+
+
+DONE
+
