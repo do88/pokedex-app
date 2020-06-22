@@ -21,7 +21,7 @@ import SubScreen from "@/components/SubScreen.vue";
 import StatusBar from "@/components/StatusBar.vue";
 import ScreenControls from "@/components/ScreenControls.vue";
 
-const pokemonListLimit = 60;
+const pokemonListLimit = 20;
 
 export default {
 	components: {
@@ -35,9 +35,10 @@ export default {
 			pokemonAPI: {
 				firstPage: `https://pokeapi.co/api/v2/pokemon?limit=${pokemonListLimit}`,
 				pokemonList: [],
-				totalResults: 0,
+				// This is the last entry in Gen 4 pokemon
 				nextPage: null,
 				previousPage: null,
+				totalResults: 150,
 				startPageNumber: 0,
 				endPageNumber: pokemonListLimit
 			},
@@ -55,15 +56,15 @@ export default {
 				.then(response => {
 					// Delay function for loading effects
 					setTimeout(() => {
+						console.log(response.data);
+
 						// Set data in the local object
 						this.pokemonAPI.pokemonList = response.data.results;
-						this.pokemonAPI.totalResults = response.data.count;
 						this.pokemonAPI.nextPage = response.data.next;
 						this.pokemonAPI.previousPage = response.data.previous;
 
 						// Control page numbers based on back or forward
 						if (pageIncrease === "next-page") {
-							console.log(this.pokemonAPI.startPageNumber);
 							this.pokemonAPI.startPageNumber += pokemonListLimit;
 							this.pokemonAPI.endPageNumber += pokemonListLimit;
 						}
@@ -81,7 +82,7 @@ export default {
 
 						// End of function
 						this.loading = false;
-					}, 2000);
+					}, 100);
 				})
 				.catch(error => {
 					console.log(error);

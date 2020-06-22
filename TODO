@@ -1,7 +1,6 @@
 TODO
 
-- Previous and next buttons in pokemonview
-- Error handling for first and last pokemon in pokemonview
+
 - Remove router links from index page and control with buttons
 - Remove routes links from pokemonview page and control with buttons
 - Loading screen/light and error screen/light on index scree
@@ -13,4 +12,5 @@ TODO
 DONE
 
 - Responsive styling for pokemon view
-
+- Previous and next buttons in pokemonview
+- Error handling for first and last pokemon in pokemonview

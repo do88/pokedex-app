@@ -44,10 +44,13 @@ export default {
 			apiError: false
 		};
 	},
+	beforeRouteUpdate(to, from, next) {
+		this.fetchData(parseInt(to.params.id));
+		next();
+	},
 	mounted() {
 		this.fetchData(parseInt(this.id));
 	},
-
 	methods: {
 		axiosAPICall(endpoint, dataObject) {
 			axios
@@ -60,19 +63,30 @@ export default {
 				.catch(error => {
 					this.apiError = true;
 					console.log(error);
+					console.log(dataObject);
 				});
 		},
 		fetchData(pokeID) {
-			this.loading = true;
-			// Delay function for loading effects
 			setTimeout(() => {
-				// Make API calls
+				// Delay function for loading effects
+				this.loading = true;
 				this.axiosAPICall(`https://pokeapi.co/api/v2/pokemon/${pokeID}`, "current");
-				this.axiosAPICall(`https://pokeapi.co/api/v2/pokemon/${pokeID + 1}`, "next");
-				this.axiosAPICall(`https://pokeapi.co/api/v2/pokemon/${pokeID - 1}`, "previous");
+
+				// Error handeling for first and last listings
+				if (pokeID > 1) {
+					this.axiosAPICall(`https://pokeapi.co/api/v2/pokemon/${pokeID - 1}`, "previous");
+				} else {
+					this.previousPokemon = {};
+				}
+				if (pokeID < 493) {
+					this.axiosAPICall(`https://pokeapi.co/api/v2/pokemon/${pokeID + 1}`, "next");
+				} else {
+					this.nextPokemon = {};
+				}
+
 				// End of function
 				if (!this.apiError) this.loading = false;
-			}, 3000);
+			}, 2000);
 		}
 	}
 };

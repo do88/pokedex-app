@@ -9,16 +9,21 @@
 			>
 				« Previous
 			</button>
-			<button @click="goToNextPage" class="main-screen__button" :disabled="loadingStatus">
+			<button
+				@click="goToNextPage"
+				class="main-screen__button"
+				:disabled="loadingStatus || pokemonAPI.endPageNumber > 150"
+			>
 				Next »
 			</button>
 			<span class="main-screen__index">
-				Showing {{ pokemonAPI.startPageNumber }} - {{ pokemonAPI.endPageNumber }} of
+				Showing {{ pokemonAPI.startPageNumber }} -
+				{{ pokemonAPI.endPageNumber > 150 ? 150 : pokemonAPI.endPageNumber }} of
 				{{ pokemonAPI.totalResults }}
 			</span>
 		</div>
 		<ul class="main-screen__list">
-			<li class="main-screen__list-item" v-for="(item, index) in pokemonAPI.pokemonList" :key="index">
+			<li class="main-screen__list-item" v-for="(item, index) in reducedArray" :key="index">
 				<router-link :to="{ name: 'pokemon', params: { id: item.indexValue } }">
 					<span class="main-screen__list-item-prefix">No</span>
 					{{ pad(item.indexValue, 3) }}:{{ item.name | titleize }}
@@ -40,6 +45,11 @@ export default {
 		loadingStatus: {
 			type: Boolean,
 			required: true
+		}
+	},
+	computed: {
+		reducedArray() {
+			return this.pokemonAPI.pokemonList.filter(item => item.indexValue <= 150);
 		}
 	},
 	filters: {
