@@ -5,11 +5,13 @@
 			:loadingStatus="loading"
 			@fetch-next="fetchNextEvent"
 			@fetch-prev="fetchPrevEvent"
+			@index-cleared="indexCleared"
+			@index-selected="indexSelected"
 		/>
 		<div class="sidebar">
 			<SubScreen />
 			<StatusBar />
-			<ScreenControls />
+			<ScreenControls :selectedIndex="selectedIndex" />
 		</div>
 	</div>
 </template>
@@ -42,7 +44,8 @@ export default {
 				startPageNumber: 0,
 				endPageNumber: pokemonListLimit
 			},
-			loading: false
+			loading: false,
+			selectedIndex: null
 		};
 	},
 	mounted() {
@@ -94,6 +97,14 @@ export default {
 		},
 		fetchPrevEvent() {
 			this.fetchData(this.pokemonAPI.previousPage, "previous-page");
+		},
+		indexCleared() {
+			console.log("recieved");
+			this.selectedIndex = null;
+		},
+		indexSelected(index) {
+			console.log("recieved", index);
+			this.selectedIndex = index;
 		}
 	}
 };

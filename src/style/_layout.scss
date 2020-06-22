@@ -67,6 +67,12 @@ body {
 			&:hover {
 				border-bottom: 2px dotted $color-green;
 				cursor: pointer;
+				color: $color-green;
+			}
+
+			&.selected {
+				border-bottom: 2px dotted $color-blue;
+				color: $color-blue;
 			}
 		}
 
@@ -79,8 +85,6 @@ body {
 		display: flex;
 		flex-wrap: wrap;
 		align-items: center;
-		border: 2px dotted darken($color-beige, 10%);
-		padding: 1rem;
 		margin: 1rem 0;
 		position: sticky;
 		top: -2rem;
@@ -92,13 +96,16 @@ body {
 			font-family: inherit;
 			font-size: 1.4rem;
 			margin-right: 1rem;
+			padding: 1rem;
 			transition: all 0.1s ease-in;
+			border: 2px dotted darken($color-beige, 10%);
 			-webkit-appearance: none;
 			-moz-appearance: none;
 
 			&:hover {
 				cursor: pointer;
 				color: $color-green;
+				border: 2px dotted $color-green;
 			}
 
 			&:disabled {
@@ -310,14 +317,14 @@ body {
 // CONTROLS
 @mixin hover-states($hover-color) {
 	background-color: $hover-color;
-	box-shadow: 0 2px 0 darken($hover-color, 20%);
-	&:hover {
-		transform: translateY(-2px);
-		box-shadow: 0 4px 0 darken($hover-color, 20%);
+	box-shadow: 0 4px 0 darken($hover-color, 20%);
+	&.selected {
+		transform: translateY(-4px);
+		box-shadow: 0 8px 0 darken($hover-color, 20%);
 		cursor: pointer;
 	}
 	&:active {
-		transform: translateY(2px);
+		transform: translateY(4px);
 		box-shadow: 0 0px 0 darken($hover-color, 20%);
 	}
 }
@@ -361,10 +368,3 @@ body {
 		@include hover-states($color-grey);
 	}
 }
-
-// <div class="controls">
-// <button class="controls__up controls--blue"></button>
-// <button class="controls__down controls--blue"></button>
-// <button class="controls__enter controls--green"></button>
-// <button class="controls__return controls--grey"></button>
-// </div>

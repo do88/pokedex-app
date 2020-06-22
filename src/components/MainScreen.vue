@@ -23,18 +23,26 @@
 			</span>
 		</div>
 		<ul class="main-screen__list">
-			<li class="main-screen__list-item" v-for="(item, index) in reducedArray" :key="index">
-				<router-link :to="{ name: 'pokemon', params: { id: item.indexValue } }">
-					<span class="main-screen__list-item-prefix">No</span>
-					{{ pad(item.indexValue, 3) }}:{{ item.name | titleize }}
-				</router-link>
+			<li
+				class="main-screen__list-item"
+				v-for="(item, index) in reducedArray"
+				:class="{ selected: index === activeIndex }"
+				:key="index"
+				@click="setActive(index)"
+			>
+				<span class="main-screen__list-item-prefix">No</span>
+				{{ pad(item.indexValue, 3) }}:{{ item.name | titleize }}
 			</li>
 		</ul>
 	</div>
 </template>
 
 <script>
-// start with pageStartNumber - 1 and then loop for the pokemonAPI.pokemonList.length adding one each timee
+// on click add active class to element
+// set enter button to active
+// on click of enter button trigger function
+// // Need to know which function, next page, or view pokemon
+// // Function will need payload
 
 export default {
 	props: {
@@ -46,6 +54,11 @@ export default {
 			type: Boolean,
 			required: true
 		}
+	},
+	data() {
+		return {
+			activeIndex: null
+		};
 	},
 	computed: {
 		reducedArray() {
@@ -68,6 +81,15 @@ export default {
 			z = z || "0";
 			n = n + "";
 			return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+		},
+		setActive(index) {
+			if (this.activeIndex === index) {
+				this.activeIndex = null;
+				this.$emit("index-cleared");
+			} else {
+				this.activeIndex = index;
+				this.$emit("index-selected", index);
+			}
 		}
 	}
 };
