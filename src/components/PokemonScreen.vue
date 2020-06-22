@@ -1,9 +1,8 @@
 <template>
 	<div class="main-screen">
-		<template v-if="currentPokemon.sprites">
+		<template v-if="currentPokemon.sprites && previousPokemon.sprites && nextPokemon.sprites">
 			<div class="stats">
 				<h1 class="title">{{ pad(currentPokemon.id, 3) }}:{{ currentPokemon.name | titleize }}</h1>
-
 				<div class="stats-image front-image">
 					<img :src="currentPokemon.sprites.front_default" alt="" />
 				</div>
@@ -52,8 +51,10 @@
 							>
 						</div>
 					</button>
-
-					<button class="stats-controls__button">
+					<router-link
+						class="stats-controls__button"
+						:to="{ name: 'pokemon', params: { id: currentPokemon.id + 1 } }"
+					>
 						<span class="stats-controls__image">
 							<template v-if="nextPokemon.sprites">
 								<img :src="nextPokemon.sprites.front_default" alt="" />
@@ -65,7 +66,7 @@
 								>{{ pad(nextPokemon.id, 3) }}:{{ nextPokemon.name | titleize }}</span
 							>
 						</div>
-					</button>
+					</router-link>
 				</div>
 			</div>
 		</template>

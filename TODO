@@ -1,6 +1,5 @@
 TODO
 
-- Responsive styling for pokemon view
 - Previous and next buttons in pokemonview
 - Error handling for first and last pokemon in pokemonview
 - Remove router links from index page and control with buttons
@@ -12,4 +11,6 @@ TODO
 
 
 DONE
+
+- Responsive styling for pokemon view
 

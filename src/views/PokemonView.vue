@@ -47,19 +47,8 @@ export default {
 	mounted() {
 		this.fetchData(parseInt(this.id));
 	},
+
 	methods: {
-		fetchData(pokeID) {
-			this.loading = true;
-			// Delay function for loading effects
-			setTimeout(() => {
-				// Make API calls
-				this.axiosAPICall(`https://pokeapi.co/api/v2/pokemon/${pokeID}`, "current");
-				this.axiosAPICall(`https://pokeapi.co/api/v2/pokemon/${pokeID + 1}`, "next");
-				this.axiosAPICall(`https://pokeapi.co/api/v2/pokemon/${pokeID - 1}`, "previous");
-				// End of function
-				if (!this.apiError) this.loading = false;
-			}, 3000);
-		},
 		axiosAPICall(endpoint, dataObject) {
 			axios
 				.get(endpoint)
@@ -72,6 +61,18 @@ export default {
 					this.apiError = true;
 					console.log(error);
 				});
+		},
+		fetchData(pokeID) {
+			this.loading = true;
+			// Delay function for loading effects
+			setTimeout(() => {
+				// Make API calls
+				this.axiosAPICall(`https://pokeapi.co/api/v2/pokemon/${pokeID}`, "current");
+				this.axiosAPICall(`https://pokeapi.co/api/v2/pokemon/${pokeID + 1}`, "next");
+				this.axiosAPICall(`https://pokeapi.co/api/v2/pokemon/${pokeID - 1}`, "previous");
+				// End of function
+				if (!this.apiError) this.loading = false;
+			}, 3000);
 		}
 	}
 };
