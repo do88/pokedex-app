@@ -4,18 +4,23 @@
 			:pokemonAPI="pokemonAPI"
 			:loadingStatus="loading"
 			@fetch-next="fetchNextEvent"
-			@fetch-prev="fetchPrevEvent"
+			@fetch-previous="fetchPrevEvent"
 			@index-cleared="indexCleared"
 			@index-selected="indexSelected"
 		/>
 		<div class="sidebar">
 			<SubScreen />
 			<StatusBar />
-			<ScreenControls :selectedIndex="selectedIndex" />
+			<ScreenControls
+				:selectedIndex="selectedIndex"
+				:selectedNavigation="selectedNavigation"
+				@fetch-next="fetchNextEvent"
+				@fetch-previous="fetchPrevEvent"
+			/>
 		</div>
 	</div>
 </template>
-
+-
 <script>
 import axios from "axios";
 import MainScreen from "@/components/MainScreen.vue";
@@ -45,7 +50,8 @@ export default {
 				endPageNumber: pokemonListLimit
 			},
 			loading: false,
-			selectedIndex: null
+			selectedIndex: null,
+			selectedNavigation: null
 		};
 	},
 	mounted() {
@@ -92,18 +98,30 @@ export default {
 					this.loading = true;
 				});
 		},
-		fetchNextEvent() {
-			this.fetchData(this.pokemonAPI.nextPage, "next-page");
+		fetchNextEvent(action) {
+			if (action === "prime") {
+				console.log(action, "next set as navigation");
+				this.selectedNavigation = "next";
+				console.log(this.selectedNavigation);
+			}
+			if (action === "fetch") {
+				this.fetchData(this.pokemonAPI.nextPage, "next-page");
+				this.selectedNavigation = null;
+			}
 		},
-		fetchPrevEvent() {
-			this.fetchData(this.pokemonAPI.previousPage, "previous-page");
+		fetchPrevEvent(action) {
+			if (action === "prime") {
+				this.selectedNavigation = "previous";
+			}
+			if (action === "fetch") {
+				this.fetchData(this.pokemonAPI.previousPage, "previous-page");
+				this.selectedNavigation = null;
+			}
 		},
 		indexCleared() {
-			console.log("recieved");
 			this.selectedIndex = null;
 		},
 		indexSelected(index) {
-			console.log("recieved", index);
 			this.selectedIndex = index;
 		}
 	}

@@ -3,14 +3,14 @@
 		<h1 class="main-screen__title">POKEDEX INDEX</h1>
 		<div class="main-screen__controls">
 			<button
-				@click="goToPreviousPage"
+				@click="setActiveNavigation('previous')"
 				:disabled="!pokemonAPI.previousPage || loadingStatus"
 				class="main-screen__button"
 			>
 				« Previous
 			</button>
 			<button
-				@click="goToNextPage"
+				@click="setActiveNavigation('next')"
 				class="main-screen__button"
 				:disabled="loadingStatus || pokemonAPI.endPageNumber > 150"
 			>
@@ -25,10 +25,10 @@
 		<ul class="main-screen__list">
 			<li
 				class="main-screen__list-item"
-				v-for="(item, index) in reducedArray"
-				:class="{ selected: index === activeIndex }"
-				:key="index"
-				@click="setActive(index)"
+				v-for="item in reducedArray"
+				:class="{ selected: item.indexValue === activeIndex }"
+				:key="item.indexValue"
+				@click="setActiveIndex(item.indexValue)"
 			>
 				<span class="main-screen__list-item-prefix">No</span>
 				{{ pad(item.indexValue, 3) }}:{{ item.name | titleize }}
@@ -71,18 +71,12 @@ export default {
 		}
 	},
 	methods: {
-		goToPreviousPage() {
-			this.$emit("fetch-prev");
-		},
-		goToNextPage() {
-			this.$emit("fetch-next");
-		},
 		pad(n, width, z) {
 			z = z || "0";
 			n = n + "";
 			return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
 		},
-		setActive(index) {
+		setActiveIndex(index) {
 			if (this.activeIndex === index) {
 				this.activeIndex = null;
 				this.$emit("index-cleared");
@@ -90,6 +84,14 @@ export default {
 				this.activeIndex = index;
 				this.$emit("index-selected", index);
 			}
+		},
+		setActiveNavigation(navigationDirection) {
+			// Clear selection from index list
+			this.$emit("index-cleared");
+			// Prime active navigation
+			navigationDirection === "next"
+				? this.$emit("fetch-next", "prime")
+				: this.$emit("fetch-previous", "prime");
 		}
 	}
 };
