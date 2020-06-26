@@ -1,7 +1,7 @@
 <template>
 	<div class="container">
 		<MainScreen
-			:pokemonAPI="pokemonAPI"
+			:pokemonAPI="PokemonListings"
 			:loadingStatus="loading"
 			@fetch-next="fetchNextEvent"
 			@fetch-previous="fetchPrevEvent"
@@ -22,13 +22,12 @@
 </template>
 -
 <script>
+import { mapState } from "vuex";
 import axios from "axios";
 import MainScreen from "@/components/MainScreen.vue";
 import SubScreen from "@/components/SubScreen.vue";
 import StatusBar from "@/components/StatusBar.vue";
 import ScreenControls from "@/components/ScreenControls.vue";
-
-const pokemonListLimit = 20;
 
 export default {
 	components: {
@@ -39,23 +38,27 @@ export default {
 	},
 	data() {
 		return {
-			pokemonAPI: {
-				firstPage: `https://pokeapi.co/api/v2/pokemon?limit=${pokemonListLimit}`,
-				pokemonList: [],
-				// This is the last entry in Gen 4 pokemon
-				nextPage: null,
-				previousPage: null,
-				totalResults: 150,
-				startPageNumber: 0,
-				endPageNumber: pokemonListLimit
-			},
+			// PokemonListings: {
+			// 	firstPage: `https://pokeapi.co/api/v2/pokemon?limit=${pokemonListLimit}`,
+			// 	pokemonList: [],
+			// 	// This is the last entry in Gen 4 pokemon
+			// 	nextPage: null,
+			// 	previousPage: null,
+			// 	totalResults: 150,
+			// 	startPageNumber: 0,
+			// 	endPageNumber: pokemonListLimit
+			// },
 			loading: false,
 			selectedIndex: null,
 			selectedNavigation: null
 		};
 	},
 	mounted() {
-		this.fetchData(this.pokemonAPI.firstPage);
+		console.log(this.PokemonListings.firstPage);
+		// this.fetchData(this.PokemonListings.firstPage);
+	},
+	computed: {
+		...mapState(["PokemonListings"])
 	},
 	methods: {
 		fetchData(apiLink, pageIncrease) {
@@ -68,23 +71,23 @@ export default {
 						console.log(response.data);
 
 						// Set data in the local object
-						this.pokemonAPI.pokemonList = response.data.results;
-						this.pokemonAPI.nextPage = response.data.next;
-						this.pokemonAPI.previousPage = response.data.previous;
+						this.PokemonListings.pokemonList = response.data.results;
+						this.PokemonListings.nextPage = response.data.next;
+						this.PokemonListings.previousPage = response.data.previous;
 
 						// Control page numbers based on back or forward
 						if (pageIncrease === "next-page") {
-							this.pokemonAPI.startPageNumber += pokemonListLimit;
-							this.pokemonAPI.endPageNumber += pokemonListLimit;
+							this.PokemonListings.startPageNumber += pokemonListLimit;
+							this.PokemonListings.endPageNumber += pokemonListLimit;
 						}
 						if (pageIncrease === "previous-page") {
-							this.pokemonAPI.startPageNumber -= pokemonListLimit;
-							this.pokemonAPI.endPageNumber -= pokemonListLimit;
+							this.PokemonListings.startPageNumber -= pokemonListLimit;
+							this.PokemonListings.endPageNumber -= pokemonListLimit;
 						}
 
 						// Add index value for each item
-						let indexValue = this.pokemonAPI.startPageNumber;
-						this.pokemonAPI.pokemonList.forEach(item => {
+						let indexValue = this.PokemonListings.startPageNumber;
+						this.PokemonListings.pokemonList.forEach(item => {
 							indexValue++;
 							item.indexValue = indexValue;
 						});
@@ -105,7 +108,7 @@ export default {
 				console.log(this.selectedNavigation);
 			}
 			if (action === "fetch") {
-				this.fetchData(this.pokemonAPI.nextPage, "next-page");
+				this.fetchData(this.PokemonListings.nextPage, "next-page");
 				this.selectedNavigation = null;
 			}
 		},
@@ -114,7 +117,7 @@ export default {
 				this.selectedNavigation = "previous";
 			}
 			if (action === "fetch") {
-				this.fetchData(this.pokemonAPI.previousPage, "previous-page");
+				this.fetchData(this.PokemonListings.previousPage, "previous-page");
 				this.selectedNavigation = null;
 			}
 		},

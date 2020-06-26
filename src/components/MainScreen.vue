@@ -25,7 +25,7 @@
 		<ul class="main-screen__list">
 			<li
 				class="main-screen__list-item"
-				v-for="item in reducedArray"
+				v-for="item in pokemonAPI.pokemonList"
 				:class="{ selected: item.indexValue === activeIndex }"
 				:key="item.indexValue"
 				@click="setActiveIndex(item.indexValue)"
