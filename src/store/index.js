@@ -1,13 +1,15 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import * as PokemonListings from "@/store/modules/PokemonListings.js";
-import * as PokemonSingle from "@/store/modules/PokemonSingle.js";
+import * as pokemonListings from "@/store/modules/pokemonListings.js";
+import * as pokemonSingle from "@/store/modules/pokemonSingle.js";
+import * as controls from "@/store/modules/controls.js";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
 	modules: {
-		PokemonListings,
-		PokemonSingle
+		pokemonListings,
+		pokemonSingle,
+		controls
 	}
 });
