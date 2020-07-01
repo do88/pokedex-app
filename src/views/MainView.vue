@@ -27,7 +27,7 @@ export default {
 		this.fetchData(this.pokemonListings.firstPage);
 	},
 	computed: {
-		...mapState(["pokemonListings", "controls"])
+		...mapState(["pokemonListings"])
 	},
 	methods: {
 		...mapActions("pokemonListings", ["fetchData"])

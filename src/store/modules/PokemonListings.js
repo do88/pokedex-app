@@ -1,8 +1,10 @@
 import axios from "axios";
+import { Store } from "vuex";
 export const namespaced = true;
 const pokemonListLimit = 20;
 
 export const state = {
+	pokemonListLimit: pokemonListLimit,
 	firstPage: `https://pokeapi.co/api/v2/pokemon?limit=${pokemonListLimit}`,
 	pokemonList: [],
 	// This is the last entry in Gen 4 pokemon
@@ -42,12 +44,12 @@ export const actions = {
 
 					// Control page numbers based on back or forward
 					if (pageIncrease === "next-page") {
-						updatedState.startPageNumber += pokemonListLimit;
-						updatedState.endPageNumber += pokemonListLimit;
+						updatedState.startPageNumber += state.pokemonListLimit;
+						updatedState.endPageNumber += state.pokemonListLimit;
 					}
 					if (pageIncrease === "previous-page") {
-						updatedState.startPageNumber -= pokemonListLimit;
-						updatedState.endPageNumber -= pokemonListLimit;
+						updatedState.startPageNumber -= state.pokemonListLimit;
+						updatedState.endPageNumber -= state.pokemonListLimit;
 					}
 
 					// Add index value for each item
@@ -65,25 +67,15 @@ export const actions = {
 				console.log(error);
 				dispatch("controls/setLoadingStatus", false, { root: true });
 			});
+	},
+	fetchNextEvent({ dispatch, state }) {
+		dispatch("fetchData", state.nextPage, "next-page");
+		// this.fetchData(state.nextPage, "next-page");
+	},
+	fetchPrevEvent({ dispatch, state }) {
+		dispatch("fetchData", state.previousPage, "previous-page");
+		// this.fetchData(state.previousPage, "previous-page");
 	}
-	// fetchNextEvent(action) {
-	// 	if (action === "prime") {
-	// 		this.controls.selectedNavigation = "next";
-	// 	}
-	// 	if (action === "fetch") {
-	// 		this.fetchData(this.pokemonListings.nextPage, "next-page");
-	// 		this.controls.selectedNavigation = null;
-	// 	}
-	// },
-	// fetchPrevEvent(action) {
-	// 	if (action === "prime") {
-	// 		this.controls.selectedNavigation = "previous";
-	// 	}
-	// 	if (action === "fetch") {
-	// 		this.fetchData(this.pokemonListings.previousPage, "previous-page");
-	// 		this.controls.selectedNavigation = null;
-	// 	}
-	// }
 };
 
 export const getters = {};

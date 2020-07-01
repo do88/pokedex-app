@@ -4,15 +4,17 @@
 		<div class="main-screen__controls">
 			<button
 				@click="setActiveNavigation('previous')"
-				:disabled="!pokemonListings.previousPage || controls.loading"
+				:disabled="controls.loading || !pokemonListings.previousPage"
+				:class="{ selected: controls.selectedNavigation === 'previous' }"
 				class="main-screen__button"
 			>
 				« Previous
 			</button>
 			<button
 				@click="setActiveNavigation('next')"
-				class="main-screen__button"
 				:disabled="controls.loading || pokemonListings.endPageNumber > 150"
+				:class="{ selected: controls.selectedNavigation === 'next' }"
+				class="main-screen__button"
 			>
 				Next »
 			</button>

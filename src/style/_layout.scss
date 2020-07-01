@@ -108,6 +108,11 @@ body {
 				border: 2px dotted $color-green;
 			}
 
+			&.selected {
+				color: $color-blue;
+				border: 2px dotted $color-blue;
+			}
+
 			&:disabled {
 				pointer-events: none;
 			}
