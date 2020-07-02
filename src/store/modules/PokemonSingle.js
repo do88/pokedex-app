@@ -36,7 +36,8 @@ export const actions = {
 				})
 				.catch(error => {
 					commit("UPDATE_ERROR_STATUS", true);
-					console.log(error, dataObject);
+					console.log(error);
+					console.log(dataObject);
 				});
 		};
 

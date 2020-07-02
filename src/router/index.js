@@ -16,6 +16,10 @@ const routes = [
 		name: "pokemon",
 		component: PokemonView,
 		props: true
+	},
+	{
+		path: "*",
+		redirect: { name: "home" }
 	}
 ];
 

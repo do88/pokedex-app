@@ -36,7 +36,9 @@ export default {
 		next();
 	},
 	mounted() {
-		this.fetchDataSingle(parseInt(this.id));
+		parseInt(this.id) > 150
+			? this.$router.push({ name: "pokemon", params: { id: 150 } })
+			: this.fetchDataSingle(parseInt(this.id));
 	},
 	computed: {
 		...mapState(["pokemonSingle"])
