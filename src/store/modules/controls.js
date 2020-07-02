@@ -3,6 +3,7 @@ export const namespaced = true;
 
 export const state = {
 	loading: false,
+	error: false,
 	activeIndex: null,
 	selectedNavigation: null,
 	adjacentPokemon: null,
@@ -10,8 +11,11 @@ export const state = {
 };
 
 export const mutations = {
-	SET_LOADING_STATUS(state, loadingState) {
-		state.loading = loadingState;
+	SET_LOADING_STATUS(state, status) {
+		state.loading = status;
+	},
+	SET_ERROR_STATUS(state, status) {
+		state.error = status;
 	},
 	UPDATE_ACTIVE_INDEX(state, newIndex) {
 		state.activeIndex = newIndex;
@@ -28,8 +32,11 @@ export const mutations = {
 };
 
 export const actions = {
-	setLoadingStatus({ commit }, loadingStatus) {
-		commit("SET_LOADING_STATUS", loadingStatus);
+	setLoadingStatus({ commit }, status) {
+		commit("SET_LOADING_STATUS", status);
+	},
+	setErrorStatus({ commit }, status) {
+		commit("SET_ERROR_STATUS", status);
 	},
 	setActiveIndex({ commit, state }, index) {
 		commit("SET_NAVIGATION", null);

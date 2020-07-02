@@ -1,23 +1,21 @@
 import axios from "axios";
 export const namespaced = true;
+
+// Set how many results are viewed at a time
 const pokemonListLimit = 20;
 
 export const state = {
-	pokemonListLimit: pokemonListLimit,
-	firstPage: `https://pokeapi.co/api/v2/pokemon?limit=${pokemonListLimit}`,
+	apiLink: "https://pokeapi.co/api/v2/pokemon",
 	pokemonList: [],
-	nextPage: null,
-	previousPage: null,
-	totalResults: 150, // This is the last entry in Gen 4 pokemon
+	pokemonListLimit: pokemonListLimit,
 	startPageNumber: 0,
-	endPageNumber: pokemonListLimit
+	endPageNumber: pokemonListLimit,
+	totalResults: 150 // This is the last entry in Gen 4 pokemon
 };
 
 export const mutations = {
 	UPDATE_LISTINGS(state, updatedState) {
 		state.pokemonList = updatedState.pokemonList;
-		state.nextPage = updatedState.nextPage;
-		state.previousPage = updatedState.previousPage;
 		state.startPageNumber = updatedState.startPageNumber;
 		state.endPageNumber = updatedState.endPageNumber;
 	}
@@ -27,7 +25,12 @@ export const actions = {
 	fetchData({ commit, dispatch, state }, payload) {
 		dispatch("controls/setLoadingStatus", true, { root: true });
 		axios
-			.get(payload.link)
+			.get(state.apiLink, {
+				params: {
+					offset: state.startPageNumber,
+					limit: state.endPageNumber
+				}
+			})
 			.then(response => {
 				// Delay function for loading effects
 				setTimeout(() => {
@@ -37,15 +40,13 @@ export const actions = {
 
 					// Update data in state object
 					updatedState.pokemonList = response.data.results;
-					updatedState.nextPage = response.data.next;
-					updatedState.previousPage = response.data.previous;
 
 					// Control page numbers based on back or forward
-					if (payload.direction === "next-page") {
+					if (payload === "next-page") {
 						updatedState.startPageNumber += state.pokemonListLimit;
 						updatedState.endPageNumber += state.pokemonListLimit;
 					}
-					if (payload.direction === "previous-page") {
+					if (payload === "previous-page") {
 						updatedState.startPageNumber -= state.pokemonListLimit;
 						updatedState.endPageNumber -= state.pokemonListLimit;
 					}
@@ -63,14 +64,14 @@ export const actions = {
 			})
 			.catch(error => {
 				console.log(error);
-				dispatch("controls/setLoadingStatus", false, { root: true });
+				dispatch("controls/setErrorStatus", true, { root: true });
 			});
 	},
-	fetchNextEvent({ dispatch, state }) {
-		dispatch("fetchData", { link: state.nextPage, direction: "next-page" });
+	fetchNextEvent({ dispatch }) {
+		dispatch("fetchData", "next-page");
 	},
-	fetchPrevEvent({ dispatch, state }) {
-		dispatch("fetchData", { link: state.previousPage, direction: "previous-page" });
+	fetchPrevEvent({ dispatch }) {
+		dispatch("fetchData", "previous-page");
 	}
 };
 

@@ -4,8 +4,7 @@ export const namespaced = true;
 export const state = {
 	currentPokemon: {},
 	nextPokemon: {},
-	previousPokemon: {},
-	apiError: false
+	previousPokemon: {}
 };
 
 export const mutations = {
@@ -17,14 +16,14 @@ export const mutations = {
 	},
 	UPDATE_PREVIOUS_POKEMON(state, newData) {
 		state.previousPokemon = newData;
-	},
-	UPDATE_ERROR_STATUS(state, error) {
-		state.apiError = error;
 	}
 };
 
 export const actions = {
-	fetchDataSingle({ state, dispatch, commit }, pokeID) {
+	fetchDataSingle({ dispatch, commit }, pokeID) {
+		// Local error check
+		let error = false;
+
 		// Define API call function
 		const axiosAPICall = (endpoint, dataObject) => {
 			axios
@@ -35,27 +34,31 @@ export const actions = {
 					if (dataObject === "previous") commit("UPDATE_PREVIOUS_POKEMON", response.data);
 				})
 				.catch(error => {
-					commit("UPDATE_ERROR_STATUS", true);
+					dispatch("controls/setErrorStatus", true, { root: true });
+					error = true;
 					console.log(error);
-					console.log(dataObject);
 				});
 		};
 
-		// Delay function for loading effects
+		// Start loading
 		dispatch("controls/setLoadingStatus", true, { root: true });
+
+		// Delay function for loading effects
 		setTimeout(() => {
 			axiosAPICall(`https://pokeapi.co/api/v2/pokemon/${pokeID}`, "current");
 
-			// Error handling for first and last listings
+			// Error handling for first  listings
 			pokeID > 1
 				? axiosAPICall(`https://pokeapi.co/api/v2/pokemon/${pokeID - 1}`, "previous")
 				: commit("UPDATE_PREVIOUS_POKEMON", {});
+
+			// Error handling for last listings
 			pokeID < 150
 				? axiosAPICall(`https://pokeapi.co/api/v2/pokemon/${pokeID + 1}`, "next")
 				: commit("UPDATE_NEXT_POKEMON", {});
 
 			// End of function and error check
-			if (!state.apiError) dispatch("controls/setLoadingStatus", false, { root: true });
+			if (!error) dispatch("controls/setLoadingStatus", false, { root: true });
 		}, 500);
 	}
 };

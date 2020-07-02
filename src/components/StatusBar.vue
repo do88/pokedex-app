@@ -12,5 +12,17 @@
 </template>
 
 <script>
-export default {};
+import { mapState } from "vuex";
+
+export default {
+	computed: {
+		loading() {
+			return this.controls.loading;
+		},
+		error() {
+			return this.controls.apiError;
+		},
+		...mapState(["controls"])
+	}
+};
 </script>
