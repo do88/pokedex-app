@@ -1,9 +1,9 @@
 <template>
 	<div class="container">
 		<PokemonScreen
-			:currentPokemon="currentPokemon"
-			:nextPokemon="nextPokemon"
-			:previousPokemon="previousPokemon"
+			:currentPokemon="pokemonSingle.currentPokemon"
+			:nextPokemon="pokemonSingle.nextPokemon"
+			:previousPokemon="pokemonSingle.previousPokemon"
 		/>
 		<div class="sidebar">
 			<SubScreen />
@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import { mapState, mapActions } from "vuex";
 import PokemonScreen from "@/components/PokemonScreen.vue";
 import SubScreen from "@/components/SubScreen.vue";
 import StatusBar from "@/components/StatusBar.vue";
@@ -35,64 +35,18 @@ export default {
 		StatusBar,
 		ScreenControls
 	},
-	data() {
-		return {
-			loading: false,
-			currentPokemon: {},
-			nextPokemon: {},
-			previousPokemon: {},
-			apiError: false
-		};
-	},
 	beforeRouteUpdate(to, from, next) {
-		this.fetchData(parseInt(to.params.id));
+		this.fetchDataSingle(parseInt(to.params.id));
 		next();
 	},
 	mounted() {
-		this.fetchData(parseInt(this.id));
+		this.fetchDataSingle(parseInt(this.id));
+	},
+	computed: {
+		...mapState(["pokemonSingle", "controls"])
 	},
 	methods: {
-		axiosAPICall(endpoint, dataObject) {
-			axios
-				.get(endpoint)
-				.then(response => {
-					if (dataObject === "current") this.currentPokemon = response.data;
-					if (dataObject === "next") this.nextPokemon = response.data;
-					if (dataObject === "previous") this.previousPokemon = response.data;
-				})
-				.catch(error => {
-					this.apiError = true;
-					console.log(error);
-					console.log(dataObject);
-				});
-		},
-		fetchData(pokeID) {
-			setTimeout(() => {
-				// Delay function for loading effects
-				this.loading = true;
-				this.axiosAPICall(`https://pokeapi.co/api/v2/pokemon/${pokeID}`, "current");
-
-				// Error handeling for first and last listings
-				if (pokeID > 1) {
-					this.axiosAPICall(`https://pokeapi.co/api/v2/pokemon/${pokeID - 1}`, "previous");
-				} else {
-					this.previousPokemon = {};
-				}
-				if (pokeID < 493) {
-					this.axiosAPICall(`https://pokeapi.co/api/v2/pokemon/${pokeID + 1}`, "next");
-				} else {
-					this.nextPokemon = {};
-				}
-
-				// End of function
-				if (!this.apiError) this.loading = false;
-			}, 2000);
-		}
+		...mapActions("pokemonSingle", ["axiosAPICall", "fetchDataSingle"])
 	}
 };
-
-// need to make three calls each time
-// need to check if its first/last listing and not make request
-// need to make sure all calls work
-// need to delay whole thing by 2s
 </script>

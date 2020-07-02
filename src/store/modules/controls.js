@@ -34,9 +34,10 @@ export const actions = {
 			state.selectedNavigation === navigationDirection ? null : navigationDirection
 		);
 	},
-	enterButtonAction({ state, dispatch }) {
+	enterButtonAction({ state, dispatch, commit }) {
 		if (state.activeIndex) {
 			router.push({ name: "pokemon", params: { id: state.activeIndex } });
+			commit("UPDATE_ACTIVE_INDEX", null);
 		}
 		if (state.selectedNavigation) {
 			state.selectedNavigation === "next"
@@ -44,12 +45,12 @@ export const actions = {
 				: dispatch("pokemonListings/fetchPrevEvent", null, { root: true });
 			state.selectedNavigation = null;
 		}
+	},
+	backToListings({}, routerInfo) {
+		if (routerInfo != "home") {
+			router.push({ name: "home" });
+		}
 	}
-	// backToListings() {
-	// 	if (this.pokemonScreenActive) {
-	// 		router.push({ name: "home" });
-	// 	}
-	// }
 };
 
 export const getters = {};

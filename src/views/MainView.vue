@@ -24,7 +24,7 @@ export default {
 		ScreenControls
 	},
 	mounted() {
-		this.fetchData(this.pokemonListings.firstPage);
+		this.fetchData({ link: this.pokemonListings.firstPage, direction: null });
 	},
 	computed: {
 		...mapState(["pokemonListings"])

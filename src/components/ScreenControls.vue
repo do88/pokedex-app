@@ -7,7 +7,11 @@
 		>
 			<span>Enter</span>
 		</button>
-		<button class="controls__return controls--grey" :class="{ selected: false }" @click="backToListings">
+		<button
+			class="controls__return controls--grey"
+			:class="{ selected: currentRouteName != 'home' }"
+			@click="backToListings(currentRouteName)"
+		>
 			<span>Return</span>
 		</button>
 	</div>
@@ -18,6 +22,9 @@ import { mapState, mapActions } from "vuex";
 
 export default {
 	computed: {
+		currentRouteName() {
+			return this.$route.name;
+		},
 		...mapState(["controls"])
 	},
 	methods: {

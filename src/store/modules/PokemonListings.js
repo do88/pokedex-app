@@ -1,5 +1,4 @@
 import axios from "axios";
-import { Store } from "vuex";
 export const namespaced = true;
 const pokemonListLimit = 20;
 
@@ -7,10 +6,9 @@ export const state = {
 	pokemonListLimit: pokemonListLimit,
 	firstPage: `https://pokeapi.co/api/v2/pokemon?limit=${pokemonListLimit}`,
 	pokemonList: [],
-	// This is the last entry in Gen 4 pokemon
 	nextPage: null,
 	previousPage: null,
-	totalResults: 150,
+	totalResults: 150, // This is the last entry in Gen 4 pokemon
 	startPageNumber: 0,
 	endPageNumber: pokemonListLimit
 };
@@ -26,10 +24,10 @@ export const mutations = {
 };
 
 export const actions = {
-	fetchData({ commit, dispatch, state }, apiLink, pageIncrease) {
+	fetchData({ commit, dispatch, state }, payload) {
 		dispatch("controls/setLoadingStatus", true, { root: true });
 		axios
-			.get(apiLink)
+			.get(payload.link)
 			.then(response => {
 				// Delay function for loading effects
 				setTimeout(() => {
@@ -43,11 +41,11 @@ export const actions = {
 					updatedState.previousPage = response.data.previous;
 
 					// Control page numbers based on back or forward
-					if (pageIncrease === "next-page") {
+					if (payload.direction === "next-page") {
 						updatedState.startPageNumber += state.pokemonListLimit;
 						updatedState.endPageNumber += state.pokemonListLimit;
 					}
-					if (pageIncrease === "previous-page") {
+					if (payload.direction === "previous-page") {
 						updatedState.startPageNumber -= state.pokemonListLimit;
 						updatedState.endPageNumber -= state.pokemonListLimit;
 					}
@@ -69,12 +67,10 @@ export const actions = {
 			});
 	},
 	fetchNextEvent({ dispatch, state }) {
-		dispatch("fetchData", state.nextPage, "next-page");
-		// this.fetchData(state.nextPage, "next-page");
+		dispatch("fetchData", { link: state.nextPage, direction: "next-page" });
 	},
 	fetchPrevEvent({ dispatch, state }) {
-		dispatch("fetchData", state.previousPage, "previous-page");
-		// this.fetchData(state.previousPage, "previous-page");
+		dispatch("fetchData", { link: state.previousPage, direction: "previous-page" });
 	}
 };
 
