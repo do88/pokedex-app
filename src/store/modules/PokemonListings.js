@@ -24,11 +24,24 @@ export const mutations = {
 export const actions = {
 	fetchData({ commit, dispatch, state }, payload) {
 		dispatch("controls/setLoadingStatus", true, { root: true });
+
+		let updatedState = state;
+
+		// Control page numbers based on back or forward
+		if (payload === "next-page") {
+			updatedState.startPageNumber += state.pokemonListLimit;
+			updatedState.endPageNumber += state.pokemonListLimit;
+		}
+		if (payload === "previous-page") {
+			updatedState.startPageNumber -= state.pokemonListLimit;
+			updatedState.endPageNumber -= state.pokemonListLimit;
+		}
+
 		axios
 			.get(state.apiLink, {
 				params: {
 					offset: state.startPageNumber,
-					limit: state.endPageNumber
+					limit: state.pokemonListLimit
 				}
 			})
 			.then(response => {
@@ -40,16 +53,6 @@ export const actions = {
 
 					// Update data in state object
 					updatedState.pokemonList = response.data.results;
-
-					// Control page numbers based on back or forward
-					if (payload === "next-page") {
-						updatedState.startPageNumber += state.pokemonListLimit;
-						updatedState.endPageNumber += state.pokemonListLimit;
-					}
-					if (payload === "previous-page") {
-						updatedState.startPageNumber -= state.pokemonListLimit;
-						updatedState.endPageNumber -= state.pokemonListLimit;
-					}
 
 					// Add index value for each item
 					let indexValue = updatedState.startPageNumber;
