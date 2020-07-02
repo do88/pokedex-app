@@ -2,7 +2,9 @@
 	<div class="controls">
 		<button
 			class="controls__enter controls--green"
-			:class="{ selected: controls.activeIndex || controls.selectedNavigation }"
+			:class="{
+				selected: controls.activeIndex || controls.selectedNavigation || controls.adjacentPokemon
+			}"
 			@click="enterButtonAction"
 		>
 			<span>Enter</span>

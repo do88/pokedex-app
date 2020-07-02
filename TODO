@@ -1,16 +1,13 @@
 TODO
-
-- Remove routes links from pokemonview page and control with buttons
-- Loading screen/light and error screen/light on index scree
+- Loading screen/light and error screen/light on index screen
 - Loading screen/light and error screen/light on pokemonview
 - Make a redirect for router if a pokemon is above /150 + entered manually in the URL
-- Store results in localstorage as user browses through pages and pokemon
 
 
 DONE
-
 - Move actions and state to Vuex store
 - Remove router links from index page and control with buttons
 - Responsive styling for pokemon view
 - Previous and next buttons in pokemonview
 - Error handling for first and last pokemon in pokemonview
+- Remove routes links from pokemonview page and control with buttons

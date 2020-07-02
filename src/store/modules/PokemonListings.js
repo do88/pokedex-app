@@ -59,7 +59,7 @@ export const actions = {
 
 					commit("UPDATE_LISTINGS", updatedState);
 					dispatch("controls/setLoadingStatus", false, { root: true });
-				}, 2000);
+				}, 500);
 			})
 			.catch(error => {
 				console.log(error);

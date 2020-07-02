@@ -27,7 +27,7 @@
 		<ul class="main-screen__list">
 			<li
 				class="main-screen__list-item"
-				v-for="item in pokemonListings.pokemonList"
+				v-for="item in reducedArray"
 				:class="{ selected: item.indexValue === controls.activeIndex }"
 				:key="item.indexValue"
 				@click="setActiveIndex(item.indexValue)"
@@ -46,7 +46,7 @@ export default {
 	computed: {
 		reducedArray() {
 			return this.pokemonListings.pokemonList.filter(
-				item => item.indexValue <= pokemonListings.totalResults
+				item => item.indexValue <= this.pokemonListings.totalResults
 			);
 		},
 		...mapState(["pokemonListings", "controls"])

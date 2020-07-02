@@ -239,7 +239,13 @@ body {
 
 				&:hover {
 					cursor: pointer;
-					border: 2px dotted darken($color-beige, 30%);
+					color: $color-green;
+					border: 2px dotted $color-green;
+				}
+
+				&.selected {
+					color: $color-blue;
+					border: 2px dotted $color-blue;
 				}
 			}
 

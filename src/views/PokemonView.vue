@@ -1,10 +1,6 @@
 <template>
 	<div class="container">
-		<PokemonScreen
-			:currentPokemon="pokemonSingle.currentPokemon"
-			:nextPokemon="pokemonSingle.nextPokemon"
-			:previousPokemon="pokemonSingle.previousPokemon"
-		/>
+		<PokemonScreen />
 		<div class="sidebar">
 			<SubScreen />
 			<StatusBar />
@@ -43,10 +39,10 @@ export default {
 		this.fetchDataSingle(parseInt(this.id));
 	},
 	computed: {
-		...mapState(["pokemonSingle", "controls"])
+		...mapState(["pokemonSingle"])
 	},
 	methods: {
-		...mapActions("pokemonSingle", ["axiosAPICall", "fetchDataSingle"])
+		...mapActions("pokemonSingle", ["fetchDataSingle"])
 	}
 };
 </script>

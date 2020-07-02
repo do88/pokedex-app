@@ -1,3 +1,4 @@
+import axios from "axios";
 export const namespaced = true;
 
 export const state = {
@@ -7,44 +8,54 @@ export const state = {
 	apiError: false
 };
 
-export const mutations = {};
+export const mutations = {
+	UPDATE_CURRENT_POKEMON(state, newData) {
+		state.currentPokemon = newData;
+	},
+	UPDATE_NEXT_POKEMON(state, newData) {
+		state.nextPokemon = newData;
+	},
+	UPDATE_PREVIOUS_POKEMON(state, newData) {
+		state.previousPokemon = newData;
+	},
+	UPDATE_ERROR_STATUS(state, error) {
+		state.apiError = error;
+	}
+};
 
 export const actions = {
-	axiosAPICall(endpoint, dataObject) {
-		axios
-			.get(endpoint)
-			.then(response => {
-				if (dataObject === "current") this.pokemonSingle.currentPokemon = response.data;
-				if (dataObject === "next") this.pokemonSingle.nextPokemon = response.data;
-				if (dataObject === "previous") this.pokemonSingle.previousPokemon = response.data;
-			})
-			.catch(error => {
-				this.pokemonSingle.apiError = true;
-				console.log(error);
-				console.log(dataObject);
-			});
-	},
-	fetchDataSingle(pokeID) {
+	fetchDataSingle({ state, dispatch, commit }, pokeID) {
+		// Define API call function
+		const axiosAPICall = (endpoint, dataObject) => {
+			axios
+				.get(endpoint)
+				.then(response => {
+					if (dataObject === "current") commit("UPDATE_CURRENT_POKEMON", response.data);
+					if (dataObject === "next") commit("UPDATE_NEXT_POKEMON", response.data);
+					if (dataObject === "previous") commit("UPDATE_PREVIOUS_POKEMON", response.data);
+				})
+				.catch(error => {
+					commit("UPDATE_ERROR_STATUS", true);
+					console.log(error, dataObject);
+				});
+		};
+
+		// Delay function for loading effects
+		dispatch("controls/setLoadingStatus", true, { root: true });
 		setTimeout(() => {
-			// Delay function for loading effects
-			this.controls.loading = true;
-			this.axiosAPICall(`https://pokeapi.co/api/v2/pokemon/${pokeID}`, "current");
+			axiosAPICall(`https://pokeapi.co/api/v2/pokemon/${pokeID}`, "current");
 
-			// Error handeling for first and last listings
-			if (pokeID > 1) {
-				this.axiosAPICall(`https://pokeapi.co/api/v2/pokemon/${pokeID - 1}`, "previous");
-			} else {
-				this.pokemonSingle.previousPokemon = {};
-			}
-			if (pokeID <= 150) {
-				this.axiosAPICall(`https://pokeapi.co/api/v2/pokemon/${pokeID + 1}`, "next");
-			} else {
-				this.pokemonSingle.nextPokemon = {};
-			}
+			// Error handling for first and last listings
+			pokeID > 1
+				? axiosAPICall(`https://pokeapi.co/api/v2/pokemon/${pokeID - 1}`, "previous")
+				: commit("UPDATE_PREVIOUS_POKEMON", {});
+			pokeID < 150
+				? axiosAPICall(`https://pokeapi.co/api/v2/pokemon/${pokeID + 1}`, "next")
+				: commit("UPDATE_NEXT_POKEMON", {});
 
-			// End of function
-			if (!this.pokemonSingle.apiError) this.controls.loading = false;
-		}, 2000);
+			// End of function and error check
+			if (!state.apiError) dispatch("controls/setLoadingStatus", false, { root: true });
+		}, 500);
 	}
 };
 

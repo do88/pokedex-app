@@ -44,9 +44,10 @@
 
 			<div class="stats-controls">
 				<template v-if="pokemonSingle.previousPokemon.sprites">
-					<router-link
+					<button
 						class="stats-controls__button"
-						:to="{ name: 'pokemon', params: { id: pokemonSingle.currentPokemon.id - 1 } }"
+						@click="setAdjacentPokemon({ nextPokemon: 'previous', id: currentPokemonID - 1 })"
+						:class="{ selected: controls.adjacentPokemon === 'previous' }"
 					>
 						<span class="stats-controls__image">
 							<template v-if="pokemonSingle.previousPokemon.sprites">
@@ -61,13 +62,14 @@
 								}}</span
 							>
 						</div>
-					</router-link>
+					</button>
 				</template>
 
 				<template v-if="pokemonSingle.nextPokemon.sprites">
-					<router-link
+					<button
 						class="stats-controls__button"
-						:to="{ name: 'pokemon', params: { id: pokemonSingle.currentPokemon.id + 1 } }"
+						@click="setAdjacentPokemon({ nextPokemon: 'next', id: currentPokemonID + 1 })"
+						:class="{ selected: controls.adjacentPokemon === 'next' }"
 					>
 						<span class="stats-controls__image">
 							<template v-if="pokemonSingle.nextPokemon.sprites">
@@ -82,7 +84,7 @@
 								}}</span
 							>
 						</div>
-					</router-link>
+					</button>
 				</template>
 			</div>
 		</div>
@@ -90,11 +92,17 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 
 export default {
 	computed: {
-		...mapState(["pokemonSingle"])
+		currentPokemonID() {
+			return this.$route.params.id;
+		},
+		...mapState(["pokemonSingle", "controls"])
+	},
+	methods: {
+		...mapActions("controls", ["setAdjacentPokemon"])
 	}
 };
 </script>
