@@ -44,7 +44,6 @@ export const actions = {
 				dispatch("controls/setLoadingStatus", false, { root: true });
 			} catch (error) {
 				dispatch("controls/setErrorStatus", true, { root: true });
-				console.log(error);
 			}
 		}
 

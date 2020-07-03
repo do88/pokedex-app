@@ -47,7 +47,6 @@ export const actions = {
 			.then(response => {
 				// Delay function for loading effects
 				setTimeout(() => {
-					console.log(response.data);
 					// Create new local state object
 					let updatedState = state;
 
@@ -65,8 +64,7 @@ export const actions = {
 					dispatch("controls/setLoadingStatus", false, { root: true });
 				}, 500);
 			})
-			.catch(error => {
-				console.log(error);
+			.catch(() => {
 				dispatch("controls/setErrorStatus", true, { root: true });
 			});
 	},
