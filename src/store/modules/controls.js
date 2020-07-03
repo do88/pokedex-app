@@ -70,9 +70,10 @@ export const actions = {
 			commit("SET_ADJACENT_POKEMON", null);
 		}
 	},
-	backToListings({ commit }, routerInfo) {
+	backToListings({ commit, dispatch }, routerInfo) {
 		if (routerInfo != "home") {
 			router.push({ name: "home" });
+			dispatch("pokemonSingle/clearStoredData", null, { root: true });
 			commit("SET_ADJACENT_POKEMON", null);
 		}
 	}

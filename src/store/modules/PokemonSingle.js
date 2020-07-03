@@ -21,45 +21,39 @@ export const mutations = {
 
 export const actions = {
 	fetchDataSingle({ dispatch, commit }, pokeID) {
-		// Local error check
-		let error = false;
+		async function fetch(pokeID) {
+			try {
+				const current = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokeID}`);
+				commit("UPDATE_CURRENT_POKEMON", current.data);
 
-		// Define API call function
-		const axiosAPICall = (endpoint, dataObject) => {
-			axios
-				.get(endpoint)
-				.then(response => {
-					if (dataObject === "current") commit("UPDATE_CURRENT_POKEMON", response.data);
-					if (dataObject === "next") commit("UPDATE_NEXT_POKEMON", response.data);
-					if (dataObject === "previous") commit("UPDATE_PREVIOUS_POKEMON", response.data);
-				})
-				.catch(error => {
-					dispatch("controls/setErrorStatus", true, { root: true });
-					error = true;
-					console.log(error);
-				});
-		};
+				if (pokeID > 1) {
+					const previous = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokeID - 1}`);
+					commit("UPDATE_PREVIOUS_POKEMON", previous.data);
+				} else {
+					commit("UPDATE_PREVIOUS_POKEMON", {});
+				}
 
-		// Start loading
-		dispatch("controls/setLoadingStatus", true, { root: true });
+				if (pokeID < 150) {
+					const next = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokeID + 1}`);
+					commit("UPDATE_NEXT_POKEMON", next.data);
+				} else {
+					commit("UPDATE_NEXT_POKEMON", {});
+				}
 
-		// Delay function for loading effects
-		setTimeout(() => {
-			axiosAPICall(`https://pokeapi.co/api/v2/pokemon/${pokeID}`, "current");
+				// End of function and error check
+				dispatch("controls/setLoadingStatus", false, { root: true });
+			} catch (error) {
+				dispatch("controls/setErrorStatus", true, { root: true });
+				console.log(error);
+			}
+		}
 
-			// Error handling for first  listings
-			pokeID > 1
-				? axiosAPICall(`https://pokeapi.co/api/v2/pokemon/${pokeID - 1}`, "previous")
-				: commit("UPDATE_PREVIOUS_POKEMON", {});
-
-			// Error handling for last listings
-			pokeID < 150
-				? axiosAPICall(`https://pokeapi.co/api/v2/pokemon/${pokeID + 1}`, "next")
-				: commit("UPDATE_NEXT_POKEMON", {});
-
-			// End of function and error check
-			if (!error) dispatch("controls/setLoadingStatus", false, { root: true });
-		}, 500);
+		fetch(pokeID);
+	},
+	clearStoredData({ commit }) {
+		commit("UPDATE_CURRENT_POKEMON", {});
+		commit("UPDATE_NEXT_POKEMON", {});
+		commit("UPDATE_PREVIOUS_POKEMON", {});
 	}
 };
 
