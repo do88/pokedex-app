@@ -1,24 +1,5 @@
-# ninja-smoothies
+# Pokedex Vue APP
 
-## Project setup
-```
-yarn install
-```
+Having some fun the the pokemon API service and learning the Vue/Vuex libraries.
 
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
-
-### Compiles and minifies for production
-```
-yarn build
-```
-
-### Lints and fixes files
-```
-yarn lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+[Project Link](https://pokedex.dmitry-o.co.uk/) - View the full application here.

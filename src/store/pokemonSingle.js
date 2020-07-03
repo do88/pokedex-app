@@ -23,6 +23,9 @@ export const actions = {
 	fetchDataSingle({ dispatch, commit }, pokeID) {
 		async function fetch(pokeID) {
 			try {
+				// Start loading
+				dispatch("controls/setLoadingStatus", true, { root: true });
+
 				const current = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokeID}`);
 				commit("UPDATE_CURRENT_POKEMON", current.data);
 
