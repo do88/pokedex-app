@@ -1,8 +1,8 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import * as pokemonListings from "@/store/modules/pokemonListings.js";
-import * as pokemonSingle from "@/store/modules/pokemonSingle.js";
-import * as controls from "@/store/modules/controls.js";
+import * as pokemonListings from "@/store/modules/pokemonListings";
+import * as pokemonSingle from "@/store/modules/pokemonSingle";
+import * as controls from "@/store/modules/controls";
 
 Vue.use(Vuex);
 
