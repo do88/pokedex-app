@@ -6,10 +6,13 @@ import * as controls from "./modules/controls";
 
 Vue.use(Vuex);
 
+const debug = process.env.NODE_ENV !== "production";
+
 export default new Vuex.Store({
 	modules: {
 		pokemonListings,
 		pokemonSingle,
 		controls
-	}
+	},
+	strict: debug
 });
