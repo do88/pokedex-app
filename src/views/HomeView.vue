@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { onMounted, computed, ref } from 'vue'
+import { onMounted, computed } from 'vue'
 import { usePokemonStore } from '@/stores/pokemon'
 import PokemonCard from '@/components/PokemonCard.vue'
 import SearchBar from '@/components/SearchBar.vue'
-import LoadingSpinner from '@/components/LoadingSpinner.vue'
+import ControlPanel from '@/components/ControlPanel.vue'
 
 const store = usePokemonStore()
-const containerRef = ref<HTMLElement | null>(null)
 
 onMounted(() => {
   if (store.pokemonList.length === 0) {
@@ -15,161 +14,106 @@ onMounted(() => {
 })
 
 const displayedPokemon = computed(() => store.filteredPokemon)
+
+const selectedPokemon = computed(() => {
+  if (!store.selectedPokemonId) return null
+  return store.pokemonList.find(p => p.id === store.selectedPokemonId)
+})
+
+const selectedName = computed(() => {
+  if (!selectedPokemon.value) return ''
+  return selectedPokemon.value.name.charAt(0).toUpperCase() + selectedPokemon.value.name.slice(1)
+})
+
+const selectedId = computed(() => {
+  if (!store.selectedPokemonId) return ''
+  return String(store.selectedPokemonId).padStart(3, '0')
+})
 </script>
 
 <template>
-  <div class="home" ref="containerRef">
-    <section class="home__hero">
-      <h1 class="home__title">
-        <span class="home__title-main">Discover</span>
-        <span class="home__title-accent">Pokémon</span>
-      </h1>
-      <p class="home__description">
-        Explore the original 151 Pokémon from the Kanto region. 
-        Click on any Pokémon to view detailed stats and information.
-      </p>
-    </section>
+  <div class="home">
+    <!-- Main Screen -->
+    <div class="screen screen--main">
+      <h1 class="screen-title">Pokédex Index</h1>
+      
+      <template v-if="store.isLoading && store.pokemonList.length === 0">
+        <div class="home__loading">
+          <span class="screen-text blink">Loading data...</span>
+        </div>
+      </template>
 
-    <SearchBar />
+      <template v-else-if="store.error">
+        <div class="home__error">
+          <span class="screen-text">ERROR: {{ store.error }}</span>
+          <button @click="store.fetchPokemonList()" class="btn btn--green">
+            Retry
+          </button>
+        </div>
+      </template>
 
-    <section class="home__stats">
-      <div class="home__stat">
-        <span class="home__stat-value">{{ store.totalCount }}</span>
-        <span class="home__stat-label">Total Pokémon</span>
+      <template v-else-if="displayedPokemon.length === 0 && store.searchQuery">
+        <div class="home__empty">
+          <span class="screen-text">No Pokémon found for "{{ store.searchQuery }}"</span>
+          <button @click="store.setSearchQuery('')" class="btn btn--grey">
+            Clear
+          </button>
+        </div>
+      </template>
+
+      <template v-else>
+        <div class="home__stats">
+          <span class="screen-text">
+            Showing {{ displayedPokemon.length }} of {{ store.totalCount }}
+          </span>
+        </div>
+        
+        <TransitionGroup name="list" tag="ul" class="home__list">
+          <PokemonCard
+            v-for="pokemon in displayedPokemon"
+            :key="pokemon.id"
+            :pokemon="pokemon"
+          />
+        </TransitionGroup>
+      </template>
+    </div>
+
+    <!-- Sidebar: Sub screen + Controls -->
+    <aside class="home__sidebar">
+      <div class="screen screen--sub">
+        <template v-if="selectedPokemon">
+          <p class="screen-text screen-text--selected">
+            <span class="home__selected-label">Selected:</span><br>
+            <span class="home__selected-id">#{{ selectedId }}</span>
+            <span class="home__selected-name">{{ selectedName }}</span>
+          </p>
+          <p class="screen-text home__hint">
+            Press ENTER to view
+          </p>
+        </template>
+        <template v-else>
+          <p class="screen-text">
+            Welcome to the Pokédex. Click a Pokémon to select it, then press ENTER.
+          </p>
+        </template>
       </div>
-      <div class="home__stat">
-        <span class="home__stat-value">{{ displayedPokemon.length }}</span>
-        <span class="home__stat-label">Showing</span>
-      </div>
-    </section>
-
-    <Transition name="fade" mode="out-in">
-      <div v-if="store.isLoading && store.pokemonList.length === 0" class="home__loading">
-        <LoadingSpinner size="lg" />
-        <p>Loading Pokémon...</p>
-      </div>
-
-      <div v-else-if="store.error" class="home__error">
-        <div class="home__error-icon">⚠️</div>
-        <p>{{ store.error }}</p>
-        <button @click="store.fetchPokemonList()" class="home__retry">
-          Try Again
-        </button>
-      </div>
-
-      <div v-else-if="displayedPokemon.length === 0" class="home__empty">
-        <div class="home__empty-icon">🔍</div>
-        <p>No Pokémon found matching "{{ store.searchQuery }}"</p>
-        <button @click="store.setSearchQuery('')" class="home__clear">
-          Clear Search
-        </button>
-      </div>
-
-      <TransitionGroup 
-        v-else
-        name="list" 
-        tag="div" 
-        class="home__grid"
-      >
-        <PokemonCard
-          v-for="(pokemon, index) in displayedPokemon"
-          :key="pokemon.id"
-          :pokemon="pokemon"
-          :style="{ '--delay': `${Math.min(index * 30, 600)}ms` }"
-        />
-      </TransitionGroup>
-    </Transition>
+      
+      <SearchBar />
+      <ControlPanel />
+    </aside>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .home {
-  display: flex;
-  flex-direction: column;
-  gap: $space-8;
+  display: grid;
+  gap: $space-4;
+  animation: home-appear 0.4s ease-out;
   
-  &__hero {
-    text-align: center;
-    padding: $space-8 0 $space-4;
+  @include respond-to($breakpoint-md) {
+    grid-template-columns: 1fr 280px;
   }
-
-  &__title {
-    display: flex;
-    flex-direction: column;
-    font-size: $font-size-4xl;
-    line-height: 1;
-    margin-bottom: $space-4;
-
-    @include respond-to($breakpoint-md) {
-      font-size: $font-size-5xl;
-      flex-direction: row;
-      justify-content: center;
-      gap: $space-3;
-    }
-  }
-
-  &__title-main {
-    color: $color-text-primary;
-  }
-
-  &__title-accent {
-    @include text-gradient($color-accent-cyan, $color-accent-magenta);
-  }
-
-  &__description {
-    max-width: 600px;
-    margin: 0 auto;
-    color: $color-text-secondary;
-    font-size: $font-size-lg;
-  }
-
-  &__stats {
-    display: flex;
-    justify-content: center;
-    gap: $space-8;
-  }
-
-  &__stat {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: $space-1;
-  }
-
-  &__stat-value {
-    font-size: $font-size-2xl;
-    font-weight: $font-weight-bold;
-    font-family: $font-mono;
-    @include text-gradient($color-accent-cyan, $color-accent-green);
-  }
-
-  &__stat-label {
-    font-size: $font-size-sm;
-    color: $color-text-muted;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  &__grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: $space-4;
-
-    @include respond-to($breakpoint-sm) {
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: $space-5;
-    }
-
-    @include respond-to($breakpoint-md) {
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: $space-6;
-    }
-
-    @include respond-to($breakpoint-lg) {
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    }
-  }
-
+  
   &__loading,
   &__error,
   &__empty {
@@ -178,41 +122,106 @@ const displayedPokemon = computed(() => store.filteredPokemon)
     align-items: center;
     justify-content: center;
     gap: $space-4;
-    min-height: 300px;
-    text-align: center;
-    color: $color-text-secondary;
+    min-height: 200px;
   }
-
-  &__error-icon,
-  &__empty-icon {
-    font-size: 3rem;
+  
+  &__stats {
+    padding: $space-2 0;
+    border-bottom: 2px dotted darken($color-screen-bg, 20%);
+    margin-bottom: $space-3;
+    animation: stats-slide 0.3s ease-out 0.1s both;
   }
-
-  &__retry,
-  &__clear {
-    padding: $space-3 $space-6;
-    font-family: inherit;
-    font-size: $font-size-base;
-    font-weight: $font-weight-semibold;
-    color: $color-text-primary;
-    background: linear-gradient(135deg, rgba($color-accent-cyan, 0.2), rgba($color-accent-magenta, 0.2));
-    border: 1px solid rgba($color-accent-cyan, 0.3);
-    border-radius: $radius-lg;
-    cursor: pointer;
-    transition: all $transition-fast;
-
-    &:hover {
-      background: linear-gradient(135deg, rgba($color-accent-cyan, 0.3), rgba($color-accent-magenta, 0.3));
-      transform: translateY(-2px);
-    }
+  
+  &__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: $space-2;
+    list-style: none;
+  }
+  
+  &__sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: $space-4;
+    animation: sidebar-appear 0.4s ease-out 0.15s both;
+  }
+  
+  &__selected-label {
+    font-size: $font-size-sm;
+    color: $color-screen-text-light;
+    text-transform: uppercase;
+  }
+  
+  &__selected-id {
+    color: $color-accent-blue-dark;
+    margin-right: $space-2;
+  }
+  
+  &__selected-name {
+    text-transform: capitalize;
+    font-size: $font-size-lg;
+  }
+  
+  &__hint {
+    margin-top: $space-3;
+    font-size: $font-size-sm;
+    color: $color-screen-text-light;
+    animation: blink 1.5s step-end infinite;
   }
 }
 
-// Staggered animation for cards
+// List transitions
 .list-enter-active {
-  animation: fade-up 0.4s ease forwards;
-  animation-delay: var(--delay, 0ms);
+  transition: all 0.3s ease-out;
+}
+
+.list-leave-active {
+  transition: all 0.2s ease-in;
+}
+
+.list-enter-from {
   opacity: 0;
+  transform: translateY(-10px);
+}
+
+.list-leave-to {
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+.list-move {
+  transition: transform 0.3s ease;
+}
+
+// Page animations
+@keyframes home-appear {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes stats-slide {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes sidebar-appear {
+  from {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 </style>
-

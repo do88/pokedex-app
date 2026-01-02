@@ -7,13 +7,19 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView
+      component: HomeView,
+      meta: {
+        transition: 'screen-fade'
+      }
     },
     {
       path: '/pokemon/:id',
       name: 'pokemon',
       component: () => import('@/views/PokemonDetailView.vue'),
-      props: true
+      props: true,
+      meta: {
+        transition: 'screen-scan'
+      }
     },
     {
       path: '/:pathMatch(.*)*',
@@ -23,4 +29,3 @@ const router = createRouter({
 })
 
 export default router
-

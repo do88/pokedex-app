@@ -4,7 +4,6 @@ import { usePokemonStore } from '@/stores/pokemon'
 
 const store = usePokemonStore()
 const searchInput = ref(store.searchQuery)
-const isFocused = ref(false)
 
 // Debounce search
 let timeout: ReturnType<typeof setTimeout>
@@ -22,89 +21,69 @@ function clearSearch() {
 </script>
 
 <template>
-  <div class="search" :class="{ 'search--focused': isFocused }">
-    <div class="search__icon">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="11" cy="11" r="8"/>
-        <path d="m21 21-4.3-4.3"/>
-      </svg>
-    </div>
-    
-    <input
-      v-model="searchInput"
-      type="text"
-      class="search__input"
-      placeholder="Search by name or number..."
-      @focus="isFocused = true"
-      @blur="isFocused = false"
-    />
-
-    <Transition name="fade">
+  <div class="search">
+    <label class="search__label">Search</label>
+    <div class="search__input-wrapper">
+      <input
+        v-model="searchInput"
+        type="text"
+        class="search__input"
+        placeholder="Name or #..."
+      />
       <button 
         v-if="searchInput" 
         class="search__clear"
         @click="clearSearch"
         type="button"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M18 6 6 18M6 6l12 12"/>
-        </svg>
+        ×
       </button>
-    </Transition>
-
-    <div class="search__glow" />
+    </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .search {
-  position: relative;
-  max-width: 500px;
-  margin: 0 auto;
-
-  &__icon {
-    position: absolute;
-    left: $space-4;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 20px;
-    height: 20px;
-    color: $color-text-muted;
-    transition: color $transition-fast;
-    pointer-events: none;
-
-    .search--focused & {
-      color: $color-accent-cyan;
-    }
+  background: $color-device-dark;
+  padding: $space-4;
+  border-radius: $radius-md;
+  
+  &__label {
+    display: block;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-bold;
+    color: rgba(white, 0.9);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: $space-3;
   }
-
+  
+  &__input-wrapper {
+    position: relative;
+  }
+  
   &__input {
     width: 100%;
-    padding: $space-4 $space-12 $space-4 $space-12;
-    font-family: inherit;
+    padding: $space-3 $space-4;
+    padding-right: $space-10;
+    font-family: $font-display;
     font-size: $font-size-base;
-    color: $color-text-primary;
-    background: $color-surface-glass;
-    border: 1px solid $color-surface-glass-border;
-    border-radius: $radius-xl;
-    outline: none;
-    transition: all $transition-fast;
-
+    color: $color-screen-text;
+    background: $color-screen-bg;
+    border: 3px solid $color-screen-border;
+    border-radius: $radius-sm;
+    box-shadow: $shadow-screen-inset;
+    
     &::placeholder {
-      color: $color-text-muted;
+      color: $color-screen-text-light;
     }
-
-    &:hover {
-      background: $color-surface-glass-hover;
-      border-color: rgba(255, 255, 255, 0.12);
-    }
-
+    
     &:focus {
-      background: rgba($color-accent-cyan, 0.05);
-      border-color: rgba($color-accent-cyan, 0.3);
+      outline: none;
+      border-color: $color-accent-blue;
     }
   }
-
+  
   &__clear {
     position: absolute;
     right: $space-3;
@@ -115,39 +94,19 @@ function clearSearch() {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: $color-text-muted;
-    background: transparent;
+    font-size: $font-size-xl;
+    font-weight: bold;
+    color: $color-screen-text-light;
+    background: darken($color-screen-bg, 10%);
     border: none;
-    border-radius: $radius-full;
+    border-radius: $radius-sm;
     cursor: pointer;
     transition: all $transition-fast;
-
-    svg {
-      width: 16px;
-      height: 16px;
-    }
-
+    
     &:hover {
-      color: $color-text-primary;
-      background: rgba(255, 255, 255, 0.1);
-    }
-  }
-
-  &__glow {
-    position: absolute;
-    inset: -2px;
-    border-radius: $radius-xl;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity $transition-base;
-    background: linear-gradient(135deg, $color-accent-cyan, $color-accent-magenta);
-    filter: blur(15px);
-    z-index: -1;
-
-    .search--focused & {
-      opacity: 0.15;
+      background: darken($color-screen-bg, 20%);
+      color: $color-screen-text;
     }
   }
 }
 </style>
-

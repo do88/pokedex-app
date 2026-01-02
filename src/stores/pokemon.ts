@@ -14,6 +14,7 @@ export const usePokemonStore = defineStore('pokemon', () => {
   const searchQuery = ref('')
   const selectedType = ref<string | null>(null)
   const viewMode = ref<'grid' | 'list'>('grid')
+  const selectedPokemonId = ref<number | null>(null)
 
   // Getters
   const filteredPokemon = computed(() => {
@@ -107,6 +108,14 @@ export const usePokemonStore = defineStore('pokemon', () => {
     currentPokemon.value = null
   }
 
+  function selectPokemon(id: number | null) {
+    selectedPokemonId.value = selectedPokemonId.value === id ? null : id
+  }
+
+  function clearSelection() {
+    selectedPokemonId.value = null
+  }
+
   return {
     // State
     pokemonList,
@@ -116,6 +125,7 @@ export const usePokemonStore = defineStore('pokemon', () => {
     searchQuery,
     selectedType,
     viewMode,
+    selectedPokemonId,
     // Getters
     filteredPokemon,
     totalCount,
@@ -126,7 +136,9 @@ export const usePokemonStore = defineStore('pokemon', () => {
     setSearchQuery,
     setSelectedType,
     setViewMode,
-    clearCurrent
+    clearCurrent,
+    selectPokemon,
+    clearSelection
   }
 })
 
