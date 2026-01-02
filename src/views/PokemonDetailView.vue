@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { usePokemonStore } from '@/stores/pokemon'
 import type { Pokemon, TypeName } from '@/types/pokemon'
 import TypeBadge from '@/components/TypeBadge.vue'
@@ -10,7 +10,6 @@ const props = defineProps<{
   id: string
 }>()
 
-const route = useRoute()
 const router = useRouter()
 const store = usePokemonStore()
 

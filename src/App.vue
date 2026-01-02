@@ -39,7 +39,7 @@ const hasError = computed(() => store.error)
     <!-- Main Content Area with Transitions -->
     <main class="pokedex__body">
       <RouterView v-slot="{ Component, route }">
-        <Transition :name="route.meta.transition || 'screen-fade'" mode="out-in">
+        <Transition :name="(route.meta.transition as string) || 'screen-fade'" mode="out-in">
           <Suspense>
             <template #default>
               <component :is="Component" :key="route.path" />
